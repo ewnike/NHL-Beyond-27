@@ -1,0 +1,48 @@
+# macOS
+.DS_Store
+
+# Editors
+# .vscode/
+# If you really want to keep settings, comment the line above and uncomment:
+.vscode/*
+!.vscode/settings.json
+
+
+# Python basics
+__pycache__/
+*.py[cod]
+*.so
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+.env
+.env.*
+
+# Jupyter / testing / tooling
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+.coverage*
+htmlcov/
+
+# Packaging / build artifacts
+*.egg-info/
+.eggs/
+build/
+dist/
+wheels/
+*.egg
+*.whl
+
+# Optional: data (choose ONE approach)
+# 1) Ignore all large raw data but allow small samples:
+data/raw/
+data/interim/
+# 2) Or, if you truly never want CSV/ZIP in Git, uncomment:
+# *.csv
+# *.zip
