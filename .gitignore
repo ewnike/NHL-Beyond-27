@@ -1,3 +1,7 @@
+# Ignored files
+*.csv
+*.zip
+
 # macOS
 .DS_Store
 
