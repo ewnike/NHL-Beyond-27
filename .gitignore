@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# VS Code (track only settings.json)
+.vscode/*
+!.vscode/settings.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+.venv/
+env/
+venv/
+ENV/
+.env
+.env.*
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+.coverage*
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+wheels/
+*.whl
