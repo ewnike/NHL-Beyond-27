@@ -23,8 +23,10 @@ Date: September 2025
 import logging
 import os
 
+import pandas as pd
 import boto3
 import botocore
+from botocore.config import Config
 
 # Configure logging
 logging.basicConfig(

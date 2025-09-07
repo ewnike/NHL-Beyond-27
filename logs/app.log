@@ -1,0 +1,39 @@
+2025-09-07 15:24:50,664 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:24:50,712 - INFO - root - Downloading from bucket: ewnike-mads593-nhl, key: peak_player_season_stats.csv, to: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv
+2025-09-07 15:24:51,685 - INFO - root - Download complete: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv
+2025-09-07 15:24:51,689 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:24:51,689 - INFO - db_utils - Database connection string created.
+2025-09-07 15:25:48,268 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:25:48,318 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:25:48,319 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:25:48,319 - INFO - db_utils - Database connection string created.
+2025-09-07 15:27:11,909 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:27:11,962 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:27:11,963 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:27:11,963 - INFO - db_utils - Database connection string created.
+2025-09-07 15:27:13,227 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-07 15:30:08,147 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:30:08,195 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:30:08,196 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:30:08,196 - INFO - db_utils - Database connection string created.
+2025-09-07 15:30:08,250 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-07 15:31:35,853 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:31:35,899 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:31:35,900 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:31:35,900 - INFO - db_utils - Database connection string created.
+2025-09-07 15:31:35,957 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-07 15:32:58,117 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:32:58,168 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:32:58,169 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:32:58,169 - INFO - db_utils - Database connection string created.
+2025-09-07 15:32:58,222 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-07 15:35:48,780 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:35:48,833 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:35:48,834 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:35:48,834 - INFO - db_utils - Database connection string created.
+2025-09-07 15:35:48,887 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-07 15:38:30,107 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-07 15:38:30,157 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-07 15:38:30,157 - INFO - db_utils - Environment variables loaded.
+2025-09-07 15:38:30,157 - INFO - db_utils - Database connection string created.
+2025-09-07 15:38:30,221 - INFO - db_utils - Table 'player_peak_season' created or verified.
