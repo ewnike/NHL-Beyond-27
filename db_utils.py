@@ -131,121 +131,41 @@ def define_player_peak_season(metadata):
         Column("team", String),
         Column("position", String),
         Column("shoots", String),
-        Column("birth_date", DateTime),
+        Column("birthday", DateTime),
         Column("age", Integer),
         Column("draft_year", Integer),
         Column("draft_rnd", Integer),
         Column("draft_overall", Integer),
         Column("games_played", Integer),
         Column("time_on_ice", Numeric(4,2)),
-        Column("giveaways", Integer),
-        Column("shortHandedGoals", Integer),
-        Column("shortHandedAssists", Integer),
-        Column("blocked", Integer),
-        Column("plusMinus", Integer),
-        Column("evenTimeOnIce", Integer),
-        Column("shortHandedTimeOnIce", Integer),
-        Column("powerPlayTimeOnIce", Integer),
+        Column("GF%", Numeric(2,2)),
+        Column("SF%", Numeric(2,2) ),
+        Column("FF%", Numeric(2,2) ),
+        Column("CF%", Numeric(2,2)),
+        Column("xGF%", Numeric(2,2)),
+        Column("GF/60", Numeric(2,2)),
+        Column("GA/60", Numeric(2,2)),
+        Column("SF/60", Numeric(2,2)),
+        Column("SA/60", Numeric(2,2)),
+        Column("FF/60", Numeric(2,2)),
+        Column("FA/60", Numeric(2,2)),
+        Column("CF/60", Numeric(2,2)),
+        Column("CA/60", Numeric(2,2)),
+        Column("xGF/60", Numeric(2,2)),
+        Column("xGA/60", Numeric(2,2)),
+        Column("G+-/60", Numeric(2,2)),
+        Column("S+-/60", Numeric(2,2)),
+        Column("F+-/60", Numeric(2,2)),
+        Column("C+-/60", Numeric(2,2)),
+        Column("xG+-/60", Numeric(2,2)),
+        Column("Sh%", Numeric(2,2)),
+        Column("Sv%", Numeric(2,2)),
     )
 
 
-def define_game_table(metadata):
-    """Define the game table schema."""
-    return Table(
-        "game",
-        metadata,
-        Column("game_id", Integer),
-        Column("season", Integer),
-        Column("type", String),
-        Column("date_time_GMT", DateTime),
-        Column("away_team_id", Integer),
-        Column("home_team_id", Integer),
-        Column("away_goals", Integer),
-        Column("home_goals", Integer),
-        Column("outcome", String),
-        Column("home_rink_side_start", String),
-        Column("venue", String),
-        Column("venue_link", String),
-        Column("venue_time_zone_id", String),
-        Column("venue_time_zone_offset", Integer),
-        Column("venue_time_zone_tz", String),
-    )
-
-
-def define_game_shifts_table(metadata):
-    """Define the table schema for game_shifts_test."""
-    return Table(
-        "game_shifts",
-        metadata,
-        Column("game_id", BigInteger),
-        Column("player_id", BigInteger),
-        Column("period", Integer),
-        Column("shift_start", Integer),
-        Column("shift_end", Integer),
-    )
-
-
-def define_game_plays_processor(metadata):
-    """Define the schema for game_plays and return the table."""
-    return Table(
-        "game_plays",
-        metadata,
-        Column("play_id", String(20), primary_key=True),
-        Column("game_id", BigInteger),
-        Column("team_id_for", Integer, nullable=True),
-        Column("team_id_against", Integer, nullable=True),
-        Column("event", String(50)),
-        Column("secondaryType", String(50)),
-        Column("x", Float, nullable=True),
-        Column("y", Float, nullable=True),
-        Column("period", Integer),
-        Column("periodType", String(50)),
-        Column("periodTime", Integer),
-        Column("periodTimeRemaining", Integer),
-        Column("dateTime", DateTime(timezone=False)),
-        Column("goals_away", Integer, nullable=True),
-        Column("goals_home", Integer, nullable=True),
-        Column("description", String(255)),
-        Column("st_x", Integer, nullable=True),
-        Column("st_y", Integer, nullable=True),
-    )
-
-
-def define_game_plays_players(metadata):
-    """Define and return the schema for game_plays_players."""
-    return Table(
-        "game_plays_players",
-        metadata,
-        Column("play_id", String(20)),
-        Column("game_id", BigInteger, nullable=False),
-        Column("player_id", BigInteger, nullable=False),
-        Column("playerType", String(20)),
-    )
-
-
-def define_player_info_table(metadata):
-    """Define the player_info table schema."""
-    return Table(
-        "player_info",
-        metadata,
-        Column("player_id", BigInteger, primary_key=True),  # Unique player identifier
-        Column("firstName", String(50)),
-        Column("lastName", String(50)),
-        Column("nationality", String(50)),
-        Column("birthCity", String(50)),
-        Column("primaryPosition", String(50)),
-        Column("birthDate", DateTime),  # Date of birth
-        Column("birthStateProvince", String(50)),
-        Column("height", Float),  # Height in inches
-        Column("height_cm", Float),  # Height in centimeters
-        Column("weight", Float),  # Weight in pounds
-        Column("shootCatches", String(10)),  # Shooting/Catching hand
-    )
-
-
-def create_corsi_table(table_name: str, metadata: MetaData) -> Table:
+def create_player_peak_season_table(table_name: str, metadata: MetaData) -> Table:
     """
-    Dynamically define and return a Corsi table with the given name.
+    Dynamically define and return a player_peak_season table with the given name.
 
     Parameters
     ----------
@@ -263,42 +183,42 @@ def create_corsi_table(table_name: str, metadata: MetaData) -> Table:
     return Table(
         table_name,
         metadata,
-        Column("team_id", Integer),
-        Column("season", Integer),
+        Column("player", String),
+        Column("eh_id", String),
+        Column("api_id", BigInteger),
+        Column("season", String),
+        Column("team", String),
+        Column("position", String),
+        Column("shoots", String),
+        Column("birthday", DateTime),
+        Column("age", Integer),
+        Column("draft_year", Integer),
+        Column("draft_rnd", Integer),
+        Column("draft_overall", Integer),
         Column("games_played", Integer),
-        Column("cf", Integer),
-        Column("ca", Integer),
-        Column("cf_percent", Float),
-        Column("capHit", Float),
-    )
-
-
-def create_caphit_table(table_name: str, metadata: MetaData) -> Table:
-    """Define caphit table schema."""
-    return Table(
-        table_name,
-        metadata,
-        Column("firstName", String(50)),
-        Column("lastName", String(50)),
-        Column("capHit", Float),
-    )
-
-
-def create_team_event_total_games_table(table_name: str, metadata: MetaData) -> Table:
-    """Define team event totals schema."""
-    return Table(
-        table_name,
-        metadata,
-        Column("team_id", Integer),
-        Column("total_goals", Integer),
-        Column("total_shots", Integer),
-        Column("total_missed_shots", Integer),
-        Column("total_blocked_shots_for", Integer),
-        Column("total_goals_against", Integer),
-        Column("total_shots_against", Integer),
-        Column("total_missed_shots_against", Integer),
-        Column("total_blocked_shots_against", Integer),
-        Column("game_id", BigInteger),
+        Column("time_on_ice", Numeric(4,2)),
+        Column("GF%", Numeric(2,2)),
+        Column("SF%", Numeric(2,2) ),
+        Column("FF%", Numeric(2,2) ),
+        Column("CF%", Numeric(2,2)),
+        Column("xGF%", Numeric(2,2)),
+        Column("GF/60", Numeric(2,2)),
+        Column("GA/60", Numeric(2,2)),
+        Column("SF/60", Numeric(2,2)),
+        Column("SA/60", Numeric(2,2)),
+        Column("FF/60", Numeric(2,2)),
+        Column("FA/60", Numeric(2,2)),
+        Column("CF/60", Numeric(2,2)),
+        Column("CA/60", Numeric(2,2)),
+        Column("xGF/60", Numeric(2,2)),
+        Column("xGA/60", Numeric(2,2)),
+        Column("G+-/60", Numeric(2,2)),
+        Column("S+-/60", Numeric(2,2)),
+        Column("F+-/60", Numeric(2,2)),
+        Column("C+-/60", Numeric(2,2)),
+        Column("xG+-/60", Numeric(2,2)),
+        Column("Sh%", Numeric(2,2)),
+        Column("Sv%", Numeric(2,2)),
     )
 
 
