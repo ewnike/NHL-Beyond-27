@@ -1,4 +1,10 @@
-# ingest_peak_season.py
+"""
+ingest_peak_season.py.
+Remove unused config_helpers; using direct ingest script
+Authored by Eric Winiecke.
+September 7, 2025.
+"""
+
 import os
 from dotenv import load_dotenv
 load_dotenv()  # <-- load .env into the process *before* other imports

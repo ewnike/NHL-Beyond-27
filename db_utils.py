@@ -16,15 +16,19 @@ from sqlalchemy import (
     BigInteger,
     Column,
     Date,
+    DateTime,
     Float,
     Integer,
     MetaData,
     String,
     Numeric,
     Table,
+    text,
+    PrimaryKeyConstraint,
     create_engine,
 )
 
+from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from log_utils import setup_logger
 
 setup_logger()
@@ -163,6 +167,40 @@ def define_player_peak_season(metadata):
     )
 
 
+def define_player_streak_table(metadata, schema: str = "public"):
+    return Table(
+        "player_streak_seasons",
+        metadata,
+        Column("player", String, nullable=False),
+        Column("start_year", Integer, nullable=False),   # first start year in the streak (e.g., 2015)
+        Column("end_year", Integer, nullable=False),     # last start year in the streak (inclusive)
+        Column("streak_len", Integer, nullable=False),   # number of consecutive seasons
+        Column("seasons", ARRAY(TEXT), nullable=False),  # {"13-14","14-15","15-16","16-17","17-18"}
+        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
+        PrimaryKeyConstraint("player", "start_year", "end_year", name="pk_player_streak_seasons"),
+        schema=schema,
+    )
+
+def define_player_five_year_aligned(metadata, schema: str = "public"):
+    # Window centered on peak season with rel_age ∈ {-2,-1,0,1,2}, carrying CF%, CF/60, CA/60 and age
+    return Table(
+        "player_five_year_aligned",
+        metadata,
+        Column("player", String, nullable=False),
+        Column("peak_year", Integer, nullable=False),
+        Column("rel_age", Integer, nullable=False),        # -2..+2
+        Column("start_year", Integer, nullable=False),
+        Column("season", String, nullable=False),
+        Column("age", Integer),
+        Column("cf_pct", Numeric(5, 2)),
+        Column("cf60",   Numeric(5, 2)),
+        Column("ca60",   Numeric(5, 2)),
+        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
+        PrimaryKeyConstraint("player", "peak_year", "rel_age", name="pk_player_five_year_aligned"),
+        schema=schema,
+    )
+
+
 def create_player_peak_season_table(table_name: str, metadata: MetaData) -> Table:
     """
     Dynamically define and return a player_peak_season table with the given name.
@@ -221,6 +259,44 @@ def create_player_peak_season_table(table_name: str, metadata: MetaData) -> Tabl
         Column("Sv%", Numeric(5,2)),
     )
 
+
+def create_player_streak_seasons_table(table_name: str, metadata) -> Table:
+    """
+    Table of players with consecutive-season streaks.
+    seasons: TEXT[] like {"13-14","14-15","15-16","16-17","17-18"}
+    """
+    return Table(
+        table_name,
+        metadata,
+        Column("player", String, nullable=False),
+        Column("start_year", Integer, nullable=False),  # first start year (e.g., 2013)
+        Column("end_year", Integer, nullable=False),    # last start year (inclusive)
+        Column("streak_len", Integer, nullable=False),  # number of consecutive seasons
+        Column("seasons", ARRAY(TEXT), nullable=False),
+        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
+        PrimaryKeyConstraint("player", "start_year", "end_year", name=f"pk_{table_name}"),
+    )
+
+def create_player_five_year_aligned_table(table_name: str, metadata) -> Table:
+    """
+    Window centered on each player's peak season with rel_age in {-2,-1,0,1,2}.
+    Carries CF%, CF/60, CA/60, age, and the original 'YY-YY' season text.
+    """
+    return Table(
+        table_name,
+        metadata,
+        Column("player",     String, nullable=False),
+        Column("peak_year",  Integer, nullable=False),   # 4-digit start year of peak (e.g., 2017)
+        Column("rel_age",    Integer, nullable=False),   # -2,-1,0,1,2 (relative to peak)
+        Column("start_year", Integer, nullable=False),   # 4-digit season start year for this row
+        Column("season",     String,  nullable=False),   # original 'YY-YY'
+        Column("age",        Integer),
+        Column("cf_pct",     Numeric(5, 2)),
+        Column("cf60",       Numeric(5, 2)),
+        Column("ca60",       Numeric(5, 2)),
+        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
+        PrimaryKeyConstraint("player", "peak_year", "rel_age", name=f"pk_{table_name}"),
+    )
 
 def create_table(engine, metadata, table):
     """
