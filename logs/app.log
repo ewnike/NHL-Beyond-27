@@ -37,3 +37,31 @@
 2025-09-07 15:38:30,157 - INFO - db_utils - Environment variables loaded.
 2025-09-07 15:38:30,157 - INFO - db_utils - Database connection string created.
 2025-09-07 15:38:30,221 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-13 11:01:38,785 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:01:38,786 - INFO - db_utils - Database connection string created.
+2025-09-13 11:24:48,853 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-13 11:24:48,901 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-13 11:24:48,902 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:24:48,902 - INFO - db_utils - Database connection string created.
+2025-09-13 11:24:48,948 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-13 11:31:07,472 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-13 11:31:07,545 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-13 11:31:07,545 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:31:07,545 - INFO - db_utils - Database connection string created.
+2025-09-13 11:31:07,594 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-13 11:32:13,006 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:32:13,006 - INFO - db_utils - Database connection string created.
+2025-09-13 11:33:17,668 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:33:17,669 - INFO - db_utils - Database connection string created.
+2025-09-13 11:45:29,863 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-13 11:45:29,937 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-13 11:45:29,937 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:45:29,937 - INFO - db_utils - Database connection string created.
+2025-09-13 11:45:29,990 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-13 11:47:24,955 - INFO - botocore.credentials - Found credentials in environment variables.
+2025-09-13 11:47:25,000 - WARNING - root - File already exists: /Users/ericwiniecke/Documents/github/NHL-Beyond-27/data/peak_player_season_stats.csv. Skipping download.
+2025-09-13 11:47:25,000 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:47:25,000 - INFO - db_utils - Database connection string created.
+2025-09-13 11:47:25,052 - INFO - db_utils - Table 'player_peak_season' created or verified.
+2025-09-13 11:47:33,770 - INFO - db_utils - Environment variables loaded.
+2025-09-13 11:47:33,770 - INFO - db_utils - Database connection string created.
