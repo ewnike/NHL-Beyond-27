@@ -1,5 +1,5 @@
 
-Our study will include onlr even strength, 5 on 5 situations.
+Our study will include only even strength, 5 on 5 situations.
 
 EV = Even Strength — i.e., hockey played with the same number of skaters on each side (no power play or penalty kill). 
 
