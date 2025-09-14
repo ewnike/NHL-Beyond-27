@@ -123,7 +123,7 @@ def get_metadata():
 
 
 # 🔹 **Step 4: Table Definitions**
-def define_player_peak_season(metadata):
+def define_player_peak_season(metadata, schema: str = "public"):
     """Define and return the schema for game_skater_stats."""
     return Table(
         "player_peak_season",
@@ -164,103 +164,33 @@ def define_player_peak_season(metadata):
         Column("xG+-/60", Numeric(5,2)),
         Column("Sh%", Numeric(5,2)),
         Column("Sv%", Numeric(5,2)),
-    )
-
-
-def define_player_streak_table(metadata, schema: str = "public"):
-    return Table(
-        "player_streak_seasons",
-        metadata,
-        Column("player", String, nullable=False),
-        Column("start_year", Integer, nullable=False),   # first start year in the streak (e.g., 2015)
-        Column("end_year", Integer, nullable=False),     # last start year in the streak (inclusive)
-        Column("streak_len", Integer, nullable=False),   # number of consecutive seasons
-        Column("seasons", ARRAY(TEXT), nullable=False),  # {"13-14","14-15","15-16","16-17","17-18"}
-        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
-        PrimaryKeyConstraint("player", "start_year", "end_year", name="pk_player_streak_seasons"),
-        schema=schema,
-    )
-
-def define_player_five_year_aligned(metadata, schema: str = "public"):
-    # Window centered on peak season with rel_age ∈ {-2,-1,0,1,2}, carrying CF%, CF/60, CA/60 and age
-    return Table(
-        "player_five_year_aligned",
-        metadata,
-        Column("player", String, nullable=False),
-        Column("peak_year", Integer, nullable=False),
-        Column("rel_age", Integer, nullable=False),        # -2..+2
-        Column("start_year", Integer, nullable=False),
-        Column("season", String, nullable=False),
-        Column("age", Integer),
-        Column("cf_pct", Numeric(5, 2)),
-        Column("cf60",   Numeric(5, 2)),
-        Column("ca60",   Numeric(5, 2)),
-        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
-        PrimaryKeyConstraint("player", "peak_year", "rel_age", name="pk_player_five_year_aligned"),
         schema=schema,
     )
 
 
-def create_player_peak_season_table(table_name: str, metadata: MetaData) -> Table:
-    """
-    Dynamically define and return a player_peak_season table with the given name.
-
-    Parameters
-    ----------
-    table_name : str
-        The name to assign to the Corsi table.
-    metadata : sqlalchemy.MetaData
-        The shared metadata object.
-
-    Returns
-    -------
-    sqlalchemy.Table
-        SQLAlchemy table object.
-
-    """
+def define_player_five_year_aligned_z_table(metadata, schema: str = "public"):
+    # Define player z_score table.
     return Table(
-        table_name,
+        "player_five_year_aligned_z_table",
         metadata,
-        Column("player", String),
-        Column("eh_id", String),
-        Column("api_id", BigInteger),
-        Column("season", String),
-        Column("team", String),
-        Column("position", String),
-        Column("shoots", String),
-        Column("birthday", Date),
+        Column("player",String),
+        Column("peak_year", Integer),
+        Column("rel_age", Integer),
+        Column("start_year", Integer),
+        Column("season",String),
         Column("age", Integer),
-        Column("draft_year", Integer),
-        Column("draft_rnd", Integer),
-        Column("draft_overall", Integer),
-        Column("games_played", Integer),
-        Column("time_on_ice", Numeric(8,2)),
-        Column("GF%", Numeric(5,2)),
-        Column("SF%", Numeric(5,2) ),
-        Column("FF%", Numeric(5,2) ),
-        Column("CF%", Numeric(5,2)),
-        Column("xGF%", Numeric(5,2)),
-        Column("GF/60", Numeric(5,2)),
-        Column("GA/60", Numeric(5,2)),
-        Column("SF/60", Numeric(5,2)),
-        Column("SA/60", Numeric(5,2)),
-        Column("FF/60", Numeric(5,2)),
-        Column("FA/60", Numeric(5,2)),
-        Column("CF/60", Numeric(5,2)),
-        Column("CA/60", Numeric(5,2)),
-        Column("xGF/60", Numeric(5,2)),
-        Column("xGA/60", Numeric(5,2)),
-        Column("G+-/60", Numeric(5,2)),
-        Column("S+-/60", Numeric(5,2)),
-        Column("F+-/60", Numeric(5,2)),
-        Column("C+-/60", Numeric(5,2)),
-        Column("xG+-/60", Numeric(5,2)),
-        Column("Sh%", Numeric(5,2)),
-        Column("Sv%", Numeric(5,2)),
+        Column("cf_pct", Numeric(5,2)),
+        Column("cf60", Numeric(5,2)),
+        Column("ca60", Numeric(5,2)),
+        Column("cf_pct_z", Numeric),
+        Column("cf60_z", Numeric),
+        Column("ca60_z",Numeric),
+        Column("spicy_score", Numeric),
+        schema=schema,
     )
 
 
-def create_player_streak_seasons_table(table_name: str, metadata) -> Table:
+def create_player_streak_seasons_table(table_name: str, metadata, schema: str = "public") -> Table:
     """
     Table of players with consecutive-season streaks.
     seasons: TEXT[] like {"13-14","14-15","15-16","16-17","17-18"}
@@ -275,9 +205,10 @@ def create_player_streak_seasons_table(table_name: str, metadata) -> Table:
         Column("seasons", ARRAY(TEXT), nullable=False),
         Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
         PrimaryKeyConstraint("player", "start_year", "end_year", name=f"pk_{table_name}"),
+        schema=schema,
     )
 
-def create_player_five_year_aligned_table(table_name: str, metadata) -> Table:
+def create_player_five_year_aligned_table(table_name: str, metadata, schema: str = "public") -> Table:
     """
     Window centered on each player's peak season with rel_age in {-2,-1,0,1,2}.
     Carries CF%, CF/60, CA/60, age, and the original 'YY-YY' season text.
@@ -296,6 +227,29 @@ def create_player_five_year_aligned_table(table_name: str, metadata) -> Table:
         Column("ca60",       Numeric(5, 2)),
         Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
         PrimaryKeyConstraint("player", "peak_year", "rel_age", name=f"pk_{table_name}"),
+        schema=schema,
+    )
+
+def create_player_five_year_aligned_z_table(table_name: str, metadata, schema: str = "public") -> Table:
+    return Table(
+        table_name,
+        metadata,
+        Column("player",     String,  nullable=False),
+        Column("peak_year",  Integer, nullable=False),
+        Column("rel_age",    Integer, nullable=False),
+        Column("start_year", Integer, nullable=False),
+        Column("season",     String,  nullable=False),
+        Column("age",        Integer),
+        Column("cf_pct",     Numeric(5,2)),
+        Column("cf60",       Numeric(5,2)),
+        Column("ca60",       Numeric(5,2)),
+        Column("cf_pct_z",   Numeric),
+        Column("cf60_z",     Numeric),
+        Column("ca60_z",     Numeric),
+        Column("spicy_score",Numeric),
+        Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
+        PrimaryKeyConstraint("player","peak_year","rel_age", name=f"pk_{table_name}"),
+        schema=schema,
     )
 
 def create_table(engine, metadata, table):

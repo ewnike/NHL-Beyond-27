@@ -96,7 +96,6 @@ def download_from_s3(bucket: str, key: str, download_path: str, overwrite: bool 
     except botocore.exceptions.NoCredentialsError:
         logging.error("AWS credentials not found. Ensure they are set in the environment.")
         raise
-
     except botocore.exceptions.PartialCredentialsError:
         logging.error("AWS credentials are incomplete. Check your AWS configuration.")
         raise

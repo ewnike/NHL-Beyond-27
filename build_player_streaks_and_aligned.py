@@ -2,20 +2,24 @@ from __future__ import annotations
 import argparse, re
 from math import inf
 from typing import Dict, List, Tuple
+import pandas as pd
 
 from sqlalchemy import MetaData, Table, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from view_utils import create_one_row_view
+
 
 from db_utils import (
     get_db_engine,
-    metadata as shared_md,
-    create_player_peak_season_table,
+    get_metadata,
     create_player_streak_seasons_table,
     create_player_five_year_aligned_table,
 )
 
 # ---------- helpers ----------
 SEASON_RE = re.compile(r"^\d{2}-\d{2}$")
+SOURCE_VIEW = "player_peak_season_one_row"  # <— use the view everywhere
+
 
 def season_to_start_year(s: str) -> int | None:
     if not s or not SEASON_RE.match(s): return None
@@ -73,64 +77,79 @@ def streaks_from_years(years: List[int]) -> List[Tuple[int,int,int]]:
     out.append((run_s, prev, prev - run_s + 1))
     return out
 
-# ---------- main job ----------
+
+
+def fetch_source_df(engine) -> pd.DataFrame:
+    """
+    Create a VIEW so that the data getting pulled for the players is always fresh
+    and up to date in case there are any changes.
+    """
+    sql = f"""
+    SELECT
+      player,
+      season,
+      age,
+      cf_pct,
+      cf60,
+      ca60,
+      time_on_ice
+    FROM public.{SOURCE_VIEW}
+    WHERE season ~ '^[0-9]{{2}}-[0-9]{{2}}$'
+    """
+    return pd.read_sql_query(sql, engine)
+
 def main(
-    source_table: str = "player_peak_season",
     streaks_table: str = "player_streak_seasons",
     aligned_table: str = "player_five_year_aligned",
-    rebuild: bool = False,                 # if True -> TRUNCATE and fully replace outputs
-    restrict_age_25_29: bool = False,      # optional: keep aligned windows with all ages in [25,29]
+    rebuild: bool = False,
+    restrict_age_25_29: bool = False,
 ):
     engine = get_db_engine()
-    md: MetaData = shared_md  # reuse your global MetaData
-    pps: Table = create_player_peak_season_table(source_table, md)
-    streaks_tbl: Table = create_player_streak_seasons_table(streaks_table, md)
-    aligned_tbl: Table = create_player_five_year_aligned_table(aligned_table, md)
-    md.create_all(engine)
+    md = get_metadata()
 
-    with engine.begin() as conn:
-        ensure_player_peak_season_ready(conn, f"public.{source_table}")
-        if rebuild:
-            conn.execute(text(f"TRUNCATE TABLE public.{streaks_table}"))
-            conn.execute(text(f"TRUNCATE TABLE public.{aligned_table}"))
+    # 1) Ensure/refresh the VIEW (fresh, aggregated one-row-per-player-season)
+    create_one_row_view(engine)
 
-    # Pull minimal columns and alias special names
-    sel = (
-        select(
-            pps.c.player,
-            pps.c.season,
-            pps.c.age,
-            pps.c["CF%"].label("cf_pct"),
-            pps.c["CF/60"].label("cf60"),
-            pps.c["CA/60"].label("ca60"),
-        ).where(pps.c.season.op("~")("^[0-9]{2}-[0-9]{2}$"))
-    )
-    with engine.begin() as conn:
-        rows = conn.execute(sel).mappings().all()
+    # 2) Prepare destination tables ONLY (do NOT create the view as a table)
+    streaks_tbl = create_player_streak_seasons_table(streaks_table, md)
+    aligned_tbl = create_player_five_year_aligned_table(aligned_table, md)
+    md.create_all(engine, tables=[streaks_tbl, aligned_tbl])
 
-    # Build per-player maps
+    if rebuild:
+        with engine.begin() as conn:
+            conn.exec_driver_sql(f'TRUNCATE TABLE public.{streaks_table}')
+            conn.exec_driver_sql(f'TRUNCATE TABLE public.{aligned_table}')
+
+    # 3) Pull clean source rows from the VIEW
+    df = fetch_source_df(engine)
+    if df.empty:
+        print("No source rows found in view; aborting.")
+        return
+
+    # 4) Build per-player maps
     years_by_player: Dict[str, List[int]] = {}
-    # metrics keyed by (player, start_year)
-    metrics: Dict[Tuple[str,int], dict] = {}
-    # pick a deterministic season text if duplicates present
-    for r in rows:
-        sy = season_to_start_year(r["season"])
-        if sy is None: continue
-        p = r["player"]
+    metrics: Dict[Tuple[str, int], dict] = {}
+
+    for r in df.itertuples(index=False):
+        sy = season_to_start_year(r.season)
+        if sy is None:
+            continue
+        p = r.player
         years_by_player.setdefault(p, []).append(sy)
         metrics[(p, sy)] = {
-            "season": r["season"],
-            "age":    r["age"],
-            "cf_pct": r["cf_pct"],
-            "cf60":   r["cf60"],
-            "ca60":   r["ca60"],
+            "season": r.season,
+            "age":    r.age,
+            "cf_pct": r.cf_pct,
+            "cf60":   r.cf60,
+            "ca60":   r.ca60,
         }
 
-    # 1) Build LONGEST ≥5 streak per player (idempotent upsert)
+    # 5) Longest >=5 consecutive-season streak per player → upsert
     streak_rows = []
     for p, years in years_by_player.items():
         runs = streaks_from_years(years)
-        if not runs: continue
+        if not runs:
+            continue
         start, end, length = max(runs, key=lambda t: t[2])
         if length >= 5:
             seasons_txt = []
@@ -158,8 +177,7 @@ def main(
             )
             conn.execute(stmt)
 
-    # 2) Build five-year aligned window around PEAK CF% (idempotent upsert)
-    #    Peak = max CF%; ties -> earliest start_year.
+    # 6) Five-year aligned window around PEAK CF% (ties -> earliest year) → upsert
     peak_year: Dict[str, int] = {}
     for p, years in years_by_player.items():
         best_cf, best_y = -inf, None
@@ -175,12 +193,10 @@ def main(
     for p, pk in peak_year.items():
         window = [pk + d for d in (-2, -1, 0, 1, 2)]
         if any((p, y) not in metrics for y in window):
-            continue  # need all five years
+            continue  # require all five seasons present
         if restrict_age_25_29:
             ages = [metrics[(p, y)]["age"] for y in window]
-            if any(a is None for a in ages): 
-                continue
-            if not (min(ages) >= 25 and max(ages) <= 29):
+            if any(a is None for a in ages) or not (min(ages) >= 25 and max(ages) <= 29):
                 continue
         for rel in (-2, -1, 0, 1, 2):
             y = pk + rel
@@ -214,9 +230,9 @@ def main(
             )
             conn.execute(stmt)
 
-    # quick summary
     print(f"streak rows upserted: {len(streak_rows)}  |  aligned rows upserted: {len(aligned_rows)} "
           f"({len(aligned_rows)//5} players)")
+
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Build player streaks and five-year aligned windows.")
