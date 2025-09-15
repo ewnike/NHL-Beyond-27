@@ -29,6 +29,8 @@
 ├── scrape_player_caphit.py
 ├── scrape_team_payroll.py
 ├── scraping_utils.py
+├── scripts
+│   └── gen_tree.sh
 └── view_utils.py
 
-9 directories, 23 files
+10 directories, 24 files
