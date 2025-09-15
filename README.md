@@ -17,54 +17,34 @@ Outcome: Prefer score- & venue-adjusted 5v5 CF% (or at least raw 5v5 CF%). Also 
 
 Weights: Use EV minutes as analytical weights (seasons with more minutes are estimated more precisely).
 
----
-
-### Styled version (fixed: no semicolons)
-```markdown
+## Project layout
 ```mermaid
 flowchart TD
-  subgraph A[NHL-Beyond-27/]
-    README[README.md]
-    pyproj[pyproject.toml]
-    pylintrc[.pylintrc]
-    precommit[.pre-commit-config.yaml]
-    docs[docs/project-structure.txt]
+  A[NHL-Beyond-27/] --> B[src/]
+  B --> C[nhl_beyond27/]
+  C --> C1[__init__.py]
+  C --> C2[cli.py]
+  C --> C3[settings.py]
+  C --> C4[logging_utils.py]
+  C --> C5[backup.py]
+  C --> C6[restore.py]
+  C --> C7[pipeline.py]
+  C --> D[builders/]
+  D --> D1[__init__.py]
+  D --> D2[ingest.py]
+  D --> D3[aligned.py]
+  D --> D4[z_player.py]
+  D --> D5[z_cohort.py]
+  C --> E[db/]
+  E --> E1[__init__.py]
+  E --> E2[utils.py]
+  A --> F[tests/]
+  F --> F1[test_pipeline_sanity.py]
+  A --> G[pyproject.toml]
+  A --> H[.pylintrc]
+  A --> I[.pre-commit-config.yaml]
+  A --> J[docs/project-structure.txt]
 
-    subgraph B[src/nhl_beyond27]
-      cli[cli.py]:::entry
-      settings[settings.py]
-      logutil[logging_utils.py]
-      backup[backup.py]
-      restore[restore.py]
-      pipeline[pipeline.py]
-
-      subgraph builders[builders/]
-        ingest[ingest.py]
-        aligned[aligned.py]
-        zplayer[z_player.py]
-        zcohort[z_cohort.py]
-      end
-
-      subgraph db[db/]
-        dbinit[__init__.py]
-        utils[utils.py]
-      end
-    end
-
-    subgraph tests[tests/]
-      sanity[test_pipeline_sanity.py]
-    end
-  end
-
-  cli --> pipeline
-  pipeline --> builders
-  pipeline --> backup
-  pipeline --> restore
-  builders --> utils
-
-  classDef entry stroke-width:2px,stroke:#333,fill:#fff3cd
-  classDef mod fill:#eef,stroke:#88a
-  class settings,logutil,backup,restore,pipeline,ingest,aligned,zplayer,zcohort,utils mod
 
 
 
