@@ -1,0 +1,34 @@
+.
+├── .env
+├── .github
+│   └── workflows
+│       └── pylint.yml
+├── .gitignore
+├── .python-version
+├── .vscode
+│   └── settings.json
+├── LICENSE
+├── README.md
+├── build_player_five_year_aligned_z.py
+├── build_player_five_year_aligned_z_cohort.py
+├── build_player_streaks_and_aligned.py
+├── constants.py
+├── data
+│   ├── download
+│   ├── extracted
+│   └── peak_player_season_stats.csv
+├── db_utils.py
+├── docs
+│   └── project-structure.txt
+├── ingest_peak_season.py
+├── log_utils.py
+├── logs
+│   └── app.log
+├── requirements.txt
+├── s3_utils.py
+├── scrape_player_caphit.py
+├── scrape_team_payroll.py
+├── scraping_utils.py
+└── view_utils.py
+
+9 directories, 23 files
