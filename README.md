@@ -37,6 +37,7 @@ pyenv activate nhl_beyond27-3.13.7
 
 # install the package (editable)
 pip install -e .
+```
 
 
 ## Project layout
