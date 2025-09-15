@@ -8,6 +8,7 @@
 ├── .vscode
 │   └── settings.json
 ├── LICENSE
+├── Makefile
 ├── README.md
 ├── build_player_five_year_aligned_z.py
 ├── build_player_five_year_aligned_z_cohort.py
@@ -24,6 +25,7 @@
 ├── log_utils.py
 ├── logs
 │   └── app.log
+├── pyproject.toml
 ├── requirements.txt
 ├── s3_utils.py
 ├── scrape_player_caphit.py
@@ -31,6 +33,20 @@
 ├── scraping_utils.py
 ├── scripts
 │   └── gen_tree.sh
+├── src
+│   ├── nhl_beyond27
+│   │   ├── __init__.py
+│   │   ├── builders
+│   │   ├── cli.py
+│   │   ├── db
+│   │   └── pipeline.py
+│   └── nhl_beyond27.egg-info
+│       ├── PKG-INFO
+│       ├── SOURCES.txt
+│       ├── dependency_links.txt
+│       ├── entry_points.txt
+│       ├── requires.txt
+│       └── top_level.txt
 └── view_utils.py
 
-10 directories, 24 files
+15 directories, 35 files
