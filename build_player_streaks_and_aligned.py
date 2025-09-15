@@ -4,7 +4,7 @@ from math import inf
 from typing import Dict, List, Tuple
 import pandas as pd
 
-from sqlalchemy import MetaData, Table, select, text
+from sqlalchemy import MetaData, Table, select, Text, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from view_utils import create_one_row_view
 
@@ -80,23 +80,23 @@ def streaks_from_years(years: List[int]) -> List[Tuple[int,int,int]]:
 
 
 def fetch_source_df(engine) -> pd.DataFrame:
-    """
-    Create a VIEW so that the data getting pulled for the players is always fresh
-    and up to date in case there are any changes.
-    """
+    cols = [
+        "player",
+        "season",
+        "age",
+        "time_on_ice",  # minutes from the view
+        "cf_pct",
+        "cf60",
+        "ca60",
+        "position",
+    ]
     sql = f"""
-    SELECT
-      player,
-      season,
-      age,
-      cf_pct,
-      cf60,
-      ca60,
-      time_on_ice
+    SELECT {", ".join(cols)}
     FROM public.{SOURCE_VIEW}
     WHERE season ~ '^[0-9]{{2}}-[0-9]{{2}}$'
     """
     return pd.read_sql_query(sql, engine)
+
 
 def main(
     streaks_table: str = "player_streak_seasons",
@@ -142,6 +142,8 @@ def main(
             "cf_pct": r.cf_pct,
             "cf60":   r.cf60,
             "ca60":   r.ca60,
+            "toi_min": float(r.time_on_ice) if r.time_on_ice is not None else None,
+            "position": getattr(r, "position", None), 
         }
 
     # 5) Longest >=5 consecutive-season streak per player → upsert
@@ -177,44 +179,61 @@ def main(
             )
             conn.execute(stmt)
 
-    # 6) Five-year aligned window around PEAK CF% (ties -> earliest year) → upsert
-    peak_year: Dict[str, int] = {}
-    for p, years in years_by_player.items():
-        best_cf, best_y = -inf, None
-        for y in sorted(set(years)):
-            cf = metrics.get((p, y), {}).get("cf_pct")
-            score = float(cf) if cf is not None else -inf
-            if (best_y is None) or (score > best_cf) or (score == best_cf and y < best_y):
-                best_cf, best_y = score, y
-        if best_y is not None:
-            peak_year[p] = best_y
-
+    # 6) Age-25..29 aligned window with avg TOI >= 500 (no peak-centering, no convex)
     aligned_rows = []
-    for p, pk in peak_year.items():
-        window = [pk + d for d in (-2, -1, 0, 1, 2)]
-        if any((p, y) not in metrics for y in window):
-            continue  # require all five seasons present
-        if restrict_age_25_29:
-            ages = [metrics[(p, y)]["age"] for y in window]
-            if any(a is None for a in ages) or not (min(ages) >= 25 and max(ages) <= 29):
+    for p, years in years_by_player.items():
+        # map each age in 25..29 -> earliest season year + metrics
+        by_age = {}
+        for y in sorted(set(years)):
+            m = metrics.get((p, y))
+            if not m:
                 continue
-        for rel in (-2, -1, 0, 1, 2):
-            y = pk + rel
-            m = metrics[(p, y)]
+            a = m.get("age")
+            if a is None:
+                continue
+            if 25 <= a <= 29 and a not in by_age:
+                by_age[a] = (y, m)
+
+        # must have all five ages
+        if not all(a in by_age for a in (25, 26, 27, 28, 29)):
+            continue
+
+        # avg TOI across the five ages must be >= 500 minutes
+        toi_list = [by_age[a][1].get("toi_min") for a in (25, 26, 27, 28, 29)]
+        if any(t is None or t <= 0 for t in toi_list):
+            continue
+        if sum(toi_list) / 5.0 < 500.0:
+            continue
+
+        # anchor at age 27 so rel_age = -2..-1..0..1..2
+        anchor_year = by_age[27][0]
+
+        for age in (25, 26, 27, 28, 29):
+            start_year, m = by_age[age]
+            rel = age - 27
             aligned_rows.append({
                 "player":     p,
-                "peak_year":  pk,
-                "rel_age":    rel,
-                "start_year": y,
+                "peak_year":  anchor_year,  # reused as "anchor (age-27) year"
+                "rel_age":    rel,          # -2,-1,0,1,2
+                "start_year": start_year,
                 "season":     m["season"],
-                "age":        m["age"],
+                "age":        age,
                 "cf_pct":     m["cf_pct"],
                 "cf60":       m["cf60"],
                 "ca60":       m["ca60"],
+                "position":   m["position"],
+                # "time_on_ice": m["toi_min"],  # add if your aligned table has this column
             })
 
+    # 💾 write once after building the full batch
     if aligned_rows:
         with engine.begin() as conn:
+            # ensure the column exists (safe even if it already does)
+            conn.exec_driver_sql(
+                "ALTER TABLE public.player_five_year_aligned "
+                "ADD COLUMN IF NOT EXISTS position text"
+            )
+
             stmt = pg_insert(aligned_tbl).values(aligned_rows)
             stmt = stmt.on_conflict_do_update(
                 index_elements=["player", "peak_year", "rel_age"],
@@ -225,13 +244,18 @@ def main(
                     "cf_pct":     stmt.excluded.cf_pct,
                     "cf60":       stmt.excluded.cf60,
                     "ca60":       stmt.excluded.ca60,
+                    "position":   stmt.excluded.position,
                     "created_at": text("now()"),
                 },
             )
             conn.execute(stmt)
 
-    print(f"streak rows upserted: {len(streak_rows)}  |  aligned rows upserted: {len(aligned_rows)} "
-          f"({len(aligned_rows)//5} players)")
+    print(
+        f"streak rows upserted: {len(streak_rows)}  |  "
+        f"aligned rows upserted: {len(aligned_rows)}  "
+        f"({len(aligned_rows)//5} players)"
+    )
+
 
 
 if __name__ == "__main__":

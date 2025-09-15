@@ -124,7 +124,6 @@ def load_mode_upsert(engine, table_name: str, csv_path: str, conflict_cols: list
 
         with conn.cursor() as cur:
             logger.info("UPSERT from %s -> %s ON CONFLICT (%s)", stage, table_name, ", ".join(conflict_cols))
-
             cur.execute(
                 f'INSERT INTO "public"."{table_name}" ({ins_cols}) '
                 f'SELECT {col_list} FROM "{stage}" '

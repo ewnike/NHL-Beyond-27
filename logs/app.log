@@ -104,3 +104,35 @@
 2025-09-14 15:53:50,672 - INFO - db_utils - Database connection string created.
 2025-09-14 15:55:46,265 - INFO - db_utils - Environment variables loaded.
 2025-09-14 15:55:46,265 - INFO - db_utils - Database connection string created.
+2025-09-15 08:11:07,977 - INFO - db_utils - Environment variables loaded.
+2025-09-15 08:11:07,977 - INFO - db_utils - Database connection string created.
+2025-09-15 08:16:26,887 - INFO - db_utils - Environment variables loaded.
+2025-09-15 08:16:26,887 - INFO - db_utils - Database connection string created.
+2025-09-15 08:30:27,917 - INFO - db_utils - Environment variables loaded.
+2025-09-15 08:30:27,917 - INFO - db_utils - Database connection string created.
+2025-09-15 08:34:14,297 - INFO - db_utils - Environment variables loaded.
+2025-09-15 08:34:14,297 - INFO - db_utils - Database connection string created.
+2025-09-15 09:08:19,995 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:08:19,995 - INFO - db_utils - Database connection string created.
+2025-09-15 09:12:30,758 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:12:30,759 - INFO - db_utils - Database connection string created.
+2025-09-15 09:32:18,152 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:32:18,152 - INFO - db_utils - Database connection string created.
+2025-09-15 09:43:48,777 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:43:48,777 - INFO - db_utils - Database connection string created.
+2025-09-15 09:45:02,326 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:45:02,326 - INFO - db_utils - Database connection string created.
+2025-09-15 09:49:37,022 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:49:37,022 - INFO - db_utils - Database connection string created.
+2025-09-15 09:50:20,727 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:50:20,727 - INFO - db_utils - Database connection string created.
+2025-09-15 09:51:54,925 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:51:54,925 - INFO - db_utils - Database connection string created.
+2025-09-15 09:52:44,843 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:52:44,843 - INFO - db_utils - Database connection string created.
+2025-09-15 09:54:07,613 - INFO - db_utils - Environment variables loaded.
+2025-09-15 09:54:07,613 - INFO - db_utils - Database connection string created.
+2025-09-15 13:43:15,660 - INFO - db_utils - Environment variables loaded.
+2025-09-15 13:43:15,660 - INFO - db_utils - Database connection string created.
+2025-09-15 13:43:15,713 - INFO - db_utils - Table 'player_five_year_aligned_z' created or verified.
+2025-09-15 13:43:15,714 - INFO - root - [UPSERT] Upserting z-scores …

@@ -23,6 +23,7 @@ from sqlalchemy import (
     String,
     Numeric,
     Table,
+    Text,
     text,
     PrimaryKeyConstraint,
     create_engine,
@@ -225,8 +226,9 @@ def create_player_five_year_aligned_table(table_name: str, metadata, schema: str
         Column("cf_pct",     Numeric(5, 2)),
         Column("cf60",       Numeric(5, 2)),
         Column("ca60",       Numeric(5, 2)),
+        Column("position", Text),
         Column("created_at", DateTime(timezone=True), server_default=text("now()"), nullable=False),
-        PrimaryKeyConstraint("player", "peak_year", "rel_age", name=f"pk_{table_name}"),
+        PrimaryKeyConstraint("player", "peak_year", "rel_age", name=f"pk_{table_name}_uix"),
         schema=schema,
     )
 
@@ -235,6 +237,7 @@ def create_player_five_year_aligned_z_table(table_name: str, metadata, schema: s
         table_name,
         metadata,
         Column("player",     String,  nullable=False),
+        Column("position",   String),
         Column("peak_year",  Integer, nullable=False),
         Column("rel_age",    Integer, nullable=False),
         Column("start_year", Integer, nullable=False),
