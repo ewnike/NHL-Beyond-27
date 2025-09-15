@@ -34,3 +34,16 @@ build/
 dist/
 wheels/
 *.whl
+
+# logs
+logs/
+*.log
+# backups and dumps
+backups/*
+!backups/.gitkeep
+*.dump
+# env & logs
+.env
+logs/*
+!.gitignore
+*.log
