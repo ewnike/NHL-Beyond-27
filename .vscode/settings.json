@@ -6,9 +6,3 @@
   "python.terminal.activateEnvironment": true,
   "python.envFile": "${workspaceFolder}/.env"
 }
-
-
-
-
-
-

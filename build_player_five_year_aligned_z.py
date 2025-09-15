@@ -7,20 +7,25 @@ cf60_z is standardized within the player (centered & scaled by that player’s o
 """
 
 import logging
-from sqlalchemy import text
 
 from db_utils import (
-    get_db_engine, get_metadata,
     create_player_five_year_aligned_z_table,  # your factory (make sure it has 'position')
     create_table,
+    get_db_engine,
+    get_metadata,
 )
+from sqlalchemy import text
 
 # ---- logging (reuse your project logger if present)
 try:
     from log_utils import setup_logger
+
     setup_logger()
 except Exception:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    )
 logger = logging.getLogger(__name__)
 
 Z_TABLE = "player_five_year_aligned_z"
@@ -63,16 +68,22 @@ SELECT
 FROM base
 """
 
+
 def ensure_z_table(engine, metadata):
     """Create the z table if missing; ensure it has 'position'."""
-    z_tbl = create_player_five_year_aligned_z_table(Z_TABLE, metadata)  # your factory should include 'position'
+    z_tbl = create_player_five_year_aligned_z_table(
+        Z_TABLE, metadata
+    )  # your factory should include 'position'
     create_table(engine, metadata, z_tbl)
     # safety: if the physical table pre-existed without 'position', add it
     with engine.begin() as conn:
-        conn.exec_driver_sql("""
+        conn.exec_driver_sql(
+            """
           ALTER TABLE public.player_five_year_aligned_z
           ADD COLUMN IF NOT EXISTS position text
-        """)
+        """
+        )
+
 
 def build_z_replace(engine):
     """Snapshot rebuild: TRUNCATE then INSERT."""
@@ -85,6 +96,7 @@ def build_z_replace(engine):
     """
     with engine.begin() as conn:
         conn.exec_driver_sql(sql)
+
 
 def build_z_upsert(engine):
     """Idempotent rebuild: INSERT .. ON CONFLICT DO UPDATE (keeps PK = (player, peak_year, rel_age))."""
@@ -109,6 +121,7 @@ def build_z_upsert(engine):
     """
     with engine.begin() as conn:
         conn.exec_driver_sql(sql)
+
 
 def main(mode: str = "upsert"):
     engine = get_db_engine()
@@ -135,10 +148,18 @@ def main(mode: str = "upsert"):
         n = conn.execute(text(f"SELECT COUNT(*) FROM public.{Z_TABLE}")).scalar_one()
     print(f"{Z_TABLE} rows: {n}")
 
+
 if __name__ == "__main__":
     import argparse
-    p = argparse.ArgumentParser(description="Build static z-score table from player_five_year_aligned")
-    p.add_argument("--mode", choices=["upsert","replace"], default="upsert",
-                   help="upsert merges by PK; replace truncates then inserts")
+
+    p = argparse.ArgumentParser(
+        description="Build static z-score table from player_five_year_aligned"
+    )
+    p.add_argument(
+        "--mode",
+        choices=["upsert", "replace"],
+        default="upsert",
+        help="upsert merges by PK; replace truncates then inserts",
+    )
     args = p.parse_args()
     main(mode=args.mode)

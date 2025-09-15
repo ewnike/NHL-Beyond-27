@@ -4,17 +4,24 @@ Compute cohort-relative (by rel_age) z-scores into a static table.
 """
 
 import logging
-from sqlalchemy import text
+
 from db_utils import (
-    get_db_engine, get_metadata, create_table,
     create_player_five_year_aligned_z_cohort_table,
+    create_table,
+    get_db_engine,
+    get_metadata,
 )
+from sqlalchemy import text
 
 try:
     from log_utils import setup_logger
+
     setup_logger()
 except Exception:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    )
 logger = logging.getLogger(__name__)
 
 SRC_TABLE = "player_five_year_aligned"
@@ -64,9 +71,11 @@ SELECT
 FROM base
 """
 
+
 def ensure_table(engine, md):
     tbl = create_player_five_year_aligned_z_cohort_table(DST_TABLE, md)
     create_table(engine, md, tbl)  # create if missing
+
 
 def build(mode: str = "upsert"):
     engine = get_db_engine()
@@ -115,10 +124,18 @@ def build(mode: str = "upsert"):
         n = conn.execute(text(f"SELECT COUNT(*) FROM public.{DST_TABLE}")).scalar_one()
     print(f"{DST_TABLE} rows: {n}")
 
+
 if __name__ == "__main__":
     import argparse
-    p = argparse.ArgumentParser(description="Build cohort-relative z-score table from player_five_year_aligned")
-    p.add_argument("--mode", choices=["upsert","replace"], default="upsert",
-                   help="upsert merges by PK; replace truncates then inserts")
+
+    p = argparse.ArgumentParser(
+        description="Build cohort-relative z-score table from player_five_year_aligned"
+    )
+    p.add_argument(
+        "--mode",
+        choices=["upsert", "replace"],
+        default="upsert",
+        help="upsert merges by PK; replace truncates then inserts",
+    )
     args = p.parse_args()
     build(mode=args.mode)

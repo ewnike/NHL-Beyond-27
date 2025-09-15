@@ -9,11 +9,8 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-
 # log_utils.py
-import logging
-import os
-from logging.handlers import RotatingFileHandler
+
 
 def setup_logger(name: str | None = None, *, level=logging.INFO, log_dir: str | None = None):
     """
@@ -21,7 +18,7 @@ def setup_logger(name: str | None = None, *, level=logging.INFO, log_dir: str | 
     Adds both console and rotating file handlers (file only if a dir is set).
     """
     logger = logging.getLogger(name)
-    if logger.handlers:   # avoid duplicate handlers on repeated calls
+    if logger.handlers:  # avoid duplicate handlers on repeated calls
         return logger
 
     logger.setLevel(level)
@@ -44,4 +41,3 @@ def setup_logger(name: str | None = None, *, level=logging.INFO, log_dir: str | 
         logger.addHandler(fh)
 
     return logger
-

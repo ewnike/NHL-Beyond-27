@@ -12,13 +12,13 @@ import os
 
 import pandas as pd
 from bs4 import BeautifulSoup
+
+# Import the shared scrolling function
+from scraping_utils import scroll_to_bottom
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-# Import the shared scrolling function
-from scraping_utils import scroll_to_bottom
 
 # Set up the Safari WebDriver
 driver = webdriver.Safari()
