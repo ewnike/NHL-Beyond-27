@@ -24,14 +24,25 @@ DST_TABLE = "player_five_year_aligned_z_cohort"
 Z_SELECT_COHORT = f"""
 WITH base AS (
   SELECT
-    a.*,
-    AVG(cf_pct)         OVER (PARTITION BY rel_age) AS mu_cf_pct,
-    STDDEV_SAMP(cf_pct) OVER (PARTITION BY rel_age) AS sd_cf_pct,
-    AVG(cf60)           OVER (PARTITION BY rel_age) AS mu_cf60,
-    STDDEV_SAMP(cf60)   OVER (PARTITION BY rel_age) AS sd_cf60,
-    AVG(ca60)           OVER (PARTITION BY rel_age) AS mu_ca60,
-    STDDEV_SAMP(ca60)   OVER (PARTITION BY rel_age) AS sd_ca60
+    a.player,
+    a.peak_year,
+    a.rel_age,
+    a.start_year,
+    a.season,
+    a.age,
+    COALESCE(a.position, v.position) AS position,
+    a.cf_pct,
+    a.cf60,
+    a.ca60,
+    AVG(a.cf_pct)   OVER (PARTITION BY a.rel_age) AS mu_cf_pct,
+    STDDEV_SAMP(a.cf_pct) OVER (PARTITION BY a.rel_age) AS sd_cf_pct,
+    AVG(a.cf60)     OVER (PARTITION BY a.rel_age) AS mu_cf60,
+    STDDEV_SAMP(a.cf60)   OVER (PARTITION BY a.rel_age) AS sd_cf60,
+    AVG(a.ca60)     OVER (PARTITION BY a.rel_age) AS mu_ca60,
+    STDDEV_SAMP(a.ca60)   OVER (PARTITION BY a.rel_age) AS sd_ca60
   FROM public.{SRC_TABLE} a
+  LEFT JOIN public.player_peak_season_one_row v
+    ON v.player = a.player AND v.season = a.season
 )
 SELECT
   player, position, peak_year, rel_age, start_year, season, age,

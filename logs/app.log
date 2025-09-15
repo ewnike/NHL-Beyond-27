@@ -139,3 +139,6 @@
 2025-09-15 14:02:40,965 - INFO - db_utils - Environment variables loaded.
 2025-09-15 14:02:40,965 - INFO - db_utils - Database connection string created.
 2025-09-15 14:02:41,015 - INFO - db_utils - Table 'player_five_year_aligned_z_cohort' created or verified.
+2025-09-15 15:43:13,468 - INFO - db_utils - Environment variables loaded.
+2025-09-15 15:43:13,468 - INFO - db_utils - Database connection string created.
+2025-09-15 15:43:13,518 - INFO - db_utils - Table 'player_five_year_aligned_z_cohort' created or verified.
