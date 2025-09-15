@@ -1,5 +1,6 @@
 .
 ├── .env
+├── .env.example
 ├── .github
 │   └── workflows
 │       └── pylint.yml
@@ -49,4 +50,4 @@
 │       └── top_level.txt
 └── view_utils.py
 
-15 directories, 35 files
+15 directories, 36 files

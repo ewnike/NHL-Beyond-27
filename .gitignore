@@ -47,3 +47,6 @@ backups/*
 logs/*
 !.gitignore
 *.log
+
+# keep example env for docs
+!.env.example
