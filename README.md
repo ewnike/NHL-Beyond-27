@@ -17,6 +17,28 @@ Outcome: Prefer score- & venue-adjusted 5v5 CF% (or at least raw 5v5 CF%). Also 
 
 Weights: Use EV minutes as analytical weights (seasons with more minutes are estimated more precisely).
 
+## Quickstart
+
+### Prerequisites
+- Python 3.10+ (tested on 3.13) and `pip`
+- A PostgreSQL database you can access (local or remote)
+- *(Optional)* AWS creds if you’ll ingest from S3
+
+### Setup
+```bash
+# clone
+git clone https://github.com/ewnike/NHL-Beyond-27.git
+cd NHL-Beyond-27
+
+# create & activate a virtualenv (pyenv example)
+pyenv virtualenv 3.13.7 nhl_beyond27-3.13.7
+pyenv activate nhl_beyond27-3.13.7
+# (or: python -m venv .venv && source .venv/bin/activate)
+
+# install the package (editable)
+pip install -e .
+
+
 ## Project layout
 ```mermaid
 flowchart TD
@@ -44,7 +66,3 @@ flowchart TD
   A --> H[.pylintrc]
   A --> I[.pre-commit-config.yaml]
   A --> J[docs/project-structure.txt]
-
-
-
-
