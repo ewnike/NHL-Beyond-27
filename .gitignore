@@ -51,3 +51,4 @@ logs/*
 # keep example env for docs
 !.env.example
 .vscode/
+.vscode/
