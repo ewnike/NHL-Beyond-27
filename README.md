@@ -47,6 +47,15 @@ This pulls the latest dump from `s3://$S3_BUCKET_NAME/backups/`, verifies integr
   ```bash
   aws configure --profile nhl-beyond
   # Region: us-east-2 (or your bucket's region)
+### Dump to S3:
+make db-dump AWS_PROFILE=nhl-beyond AWS_REGION=us-east-2 S3_BUCKET_NAME=ewnike-mads593-nhl \
+             PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD='MADS_593*' PGDATABASE=nhl_beyond
+
+### Restore latest from S3 (to nhl_beyond_test):
+make db-restore AWS_PROFILE=nhl-beyond AWS_REGION=us-east-2 S3_BUCKET_NAME=ewnike-mads593-nhl \
+                PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD='MADS_593*' PGDATABASE=nhl_beyond_test \
+                TARGET_DB=nhl_beyond_test
+
 
 
 ## Project layout
