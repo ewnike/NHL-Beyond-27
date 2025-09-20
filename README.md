@@ -40,27 +40,32 @@ pip install -e .
 ```
 ## Download & Restore the Database (from S3)
 
-This pulls the latest dump from `s3://$S3_BUCKET_NAME/backups/`, verifies integrity, and restores it into your local Postgres.
+Pulls the latest dump from `s3://$S3_BUCKET_NAME/backups/`, verifies integrity, and restores it into your local Postgres.
 
 ### Prerequisites
 - **AWS CLI** configured with a profile that can read the bucket (one-time):
-  ```bash
-  aws configure --profile nhl-beyond
-  # Region: us-east-2 (or your bucket's region)
-### Dump to S3:
-make db-dump AWS_PROFILE=nhl-beyond AWS_REGION=us-east-2 S3_BUCKET_NAME=ewnike-mads593-nhl \
-             PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD='MADS_593*' PGDATABASE=nhl_beyond
+```bash
+aws configure --profile nhl-beyond
+# Region: us-east-2
 
-### Restore latest from S3 (to nhl_beyond_test):
+## Dump to S3 (maintainer):
+make db-dump \
+  AWS_PROFILE=nhl-beyond AWS_REGION=us-east-2 S3_BUCKET_NAME=ewnike-mads593-nhl \
+  PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD='YOUR_PASSWORD' PGDATABASE=nhl_beyond
 
-make db-restore AWS_PROFILE=nhl-beyond AWS_REGION=us-east-2 S3_BUCKET_NAME=ewnike-mads593-nhl \
-                PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD='MADS_593*' PGDATABASE=nhl_beyond_test \
-                TARGET_DB=nhl_beyond_test
+
+## Restore latest from S3 (to nhl_beyond_test):
+make db-restore \
+  AWS_PROFILE=nhl-beyond AWS_REGION=us-east-2 S3_BUCKET_NAME=ewnike-mads593-nhl \
+  PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD='YOUR_PASSWORD' \
+  PGDATABASE=nhl_beyond_test TARGET_DB=nhl_beyond_test
+
 
 ## Verify:
 psql -h 127.0.0.1 -p 5432 -U postgres -d nhl_beyond_test -c "\dt"
 
-```
+
+Swap `YOUR_PASSWORD` for your actual password (keep the quotes).
 
 
 
