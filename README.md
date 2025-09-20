@@ -38,6 +38,15 @@ pyenv activate nhl_beyond27-3.13.7
 # install the package (editable)
 pip install -e .
 ```
+## Download & Restore the Database (from S3)
+
+This pulls the latest dump from `s3://$S3_BUCKET_NAME/backups/`, verifies integrity, and restores it into your local Postgres.
+
+### Prerequisites
+- **AWS CLI** configured with a profile that can read the bucket (one-time):
+  ```bash
+  aws configure --profile nhl-beyond
+  # Region: us-east-2 (or your bucket's region)
 
 
 ## Project layout
