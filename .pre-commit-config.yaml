@@ -26,6 +26,13 @@ repos:
     hooks:
       - id: forbid-env-files
         name: Forbid committing .env* files
-        entry: bash -c 'if git ls-files -z | xargs -0 -n1 basename | grep -Eq "^\.env($|\.)"; then echo ".env* files present"; exit 1; fi'
+        entry: bash -c '
+          bad=$(git ls-files -z |
+                xargs -0 -n1 |
+                grep -E "(\.env($|\.))|(^.*\.env$)" |
+                grep -Ev "^\.?env\.example$|/\.?env\.example$");
+          if [ -n "$bad" ]; then
+            echo ".env* files present:"; echo "$bad"; exit 1;
+          fi'
         language: system
         pass_filenames: false
