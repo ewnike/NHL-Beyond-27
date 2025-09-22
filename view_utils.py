@@ -1,5 +1,4 @@
 # view_utils.py
-from sqlalchemy import text
 
 ONE_ROW_VIEW_SQL = """
 CREATE VIEW public.player_peak_season_one_row AS
@@ -62,9 +61,10 @@ SELECT
 FROM sums;
 """
 
+
 def create_one_row_view(engine) -> None:
     with engine.begin() as conn:
         # Drop first so we can change output column names safely
-        conn.exec_driver_sql('DROP VIEW IF EXISTS public.player_peak_season_one_row')
+        conn.exec_driver_sql("DROP VIEW IF EXISTS public.player_peak_season_one_row")
         # Now create with **no params**
-        conn.exec_driver_sql(ONE_ROW_VIEW_SQL)   # <-- no second argument
+        conn.exec_driver_sql(ONE_ROW_VIEW_SQL)  # <-- no second argument

@@ -1,55 +1,47 @@
-# Ignored files
-*.csv
-*.zip
-
-# macOS
+# --- OS / Editor ---
 .DS_Store
+Thumbs.db
 
-# VS Code (track only settings.json)
-.vscode/*
-!.vscode/settings.json
 
-# Python
+# --- Python ---
 __pycache__/
 *.py[cod]
-*.so
+*.pyo
+*.pyd
 *.egg-info/
 .eggs/
+.python-version
+*.log
+
+# Virtualenvs
 .venv/
-env/
 venv/
-ENV/
+env/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# --- Environment files (do not commit secrets) ---
 .env
 .env.*
-.ipynb_checkpoints/
-.pytest_cache/
-.mypy_cache/
-.pytype/
-.pyre/
-.coverage*
-htmlcov/
+*.env
+!.env.example        # keep a safe template in the repo
+!.env.template
 
-# Build artifacts
+# --- Selenium / Chrome profiles (keep out of git) ---
+.selenium_profile_stathead/
+.chrome-sr-profile/
+.selenium-profiles/
+
+# --- Project outputs / scratch ---
+out/
+debug_hr_page.html
+*.csv
+*.parquet
+*.tmp
+tmp/
+cache/
+
+# --- Build / dist ---
 build/
 dist/
-wheels/
-*.whl
-
-# logs
-logs/
-*.log
-# backups and dumps
-backups/*
-!backups/.gitkeep
-*.dump
-# env & logs
-.env
-logs/*
-!.gitignore
-*.log
-
-# keep example env for docs
-!.env.example
-.vscode/
-.vscode/
-.vscode/

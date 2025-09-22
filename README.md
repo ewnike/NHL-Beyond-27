@@ -1,7 +1,7 @@
 
 Our study will include only even strength, 5 on 5 situations.
 
-EV = Even Strength — i.e., hockey played with the same number of skaters on each side (no power play or penalty kill). 
+EV = Even Strength — i.e., hockey played with the same number of skaters on each side (no power play or penalty kill).
 
 Minutes filter: Require a minimum EV TOI per season (e.g., ≥ 500 EV minutes) to avoid noise.
 

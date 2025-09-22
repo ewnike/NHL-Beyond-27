@@ -1,6 +1,9 @@
 from __future__ import annotations
+
 import argparse
-from .pipeline import rebuild, full
+
+from .pipeline import full, rebuild
+
 
 def main() -> None:
     p = argparse.ArgumentParser(prog="nb27", description="NHL Beyond 27 pipeline")

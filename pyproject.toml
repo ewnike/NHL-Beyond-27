@@ -19,3 +19,21 @@ nb27 = "nhl_beyond27.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Good default rule set (PEP8 + common quality checks)
+select = ["E", "F", "I", "B", "UP", "C4", "SIM"]
+# Let Black handle line wrapping; ignore E203 to match Black
+ignore = ["E501", "E203"]
+
+[tool.ruff.format]
+# We're using Black for formatting, so keep Ruff formatter off (default).
