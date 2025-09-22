@@ -45,3 +45,9 @@ cache/
 # --- Build / dist ---
 build/
 dist/
+
+# CSVs and other data artifacts
+*.csv
+*.parquet
+out/
+data/
