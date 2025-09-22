@@ -50,3 +50,16 @@ logs/*
 
 # keep example env for docs
 !.env.example
+
+cat >> .gitignore << 'IGN'
+# Selenium Chrome profiles / caches
+.selenium_profile_stathead/
+.chrome-sr-profile/
+.selenium-profiles/
+
+# Outputs & scratch
+out/
+debug_hr_page.html
+
+.DS_Store
+IGN

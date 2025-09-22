@@ -11,6 +11,21 @@ log = logging.getLogger(__name__)
 PROJ_ROOT = Path(__file__).resolve().parents[2]
 
 
+def load_optional(module_name: str, filename: str, required: bool = False):
+    try:
+        mod = __import__(module_name, fromlist=["*"])
+        return mod
+    except Exception as err:  # capture the original exception
+        msg = f"Missing module/file: {module_name} ({filename})."
+        if required:
+            # keep the original traceback attached (B904)
+            raise ImportError(msg) from err
+            # If you prefer to hide the original cause, use:
+            # raise ImportError(msg) from None
+        log.warning("%s Skipping optional step.", msg)
+        return None
+
+
 def _prepare_sys_path() -> None:
     root = str(PROJ_ROOT)
     if root not in sys.path:
@@ -34,7 +49,7 @@ def _alias(name: str, target: str) -> None:
 def _load_by_path(path: Path):
     spec = importlib_util.spec_from_file_location(path.stem, str(path))
     if spec is None or spec.loader is None:
-        raise ImportError(f"Could not load spec for {path}")
+        raise ImportError(f"Could not load spec for {path}") from None
     mod = importlib_util.module_from_spec(spec)
     spec.loader.exec_module(mod)  # type: ignore[assignment]
     return mod
@@ -50,7 +65,7 @@ def _import_or_path(module_name: str, filename: str, required: bool = True):
             return _load_by_path(path)
         msg = f"Missing module/file: {module_name} ({filename})."
         if required:
-            raise ImportError(msg)
+            raise ImportError(msg) from None
         log.warning("%s Skipping optional step.", msg)
         return None
 

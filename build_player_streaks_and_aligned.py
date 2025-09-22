@@ -175,7 +175,7 @@ def main(
             seasons_txt = []
             for y in range(start, end + 1):
                 m = metrics.get((p, y))
-                seasons_txt.append(m["season"] if m else f"{str(y)[2:]}-{str(y+1)[2:]}")
+                seasons_txt.append(m["season"] if m else f"{str(y)[2:]}-{str(y + 1)[2:]}")
             streak_rows.append(
                 {
                     "player": p,
@@ -252,8 +252,7 @@ def main(
         with engine.begin() as conn:
             # ensure the column exists (safe even if it already does)
             conn.exec_driver_sql(
-                "ALTER TABLE public.player_five_year_aligned "
-                "ADD COLUMN IF NOT EXISTS position text"
+                "ALTER TABLE public.player_five_year_aligned ADD COLUMN IF NOT EXISTS position text"
             )
 
             stmt = pg_insert(aligned_tbl).values(aligned_rows)
@@ -275,7 +274,7 @@ def main(
     print(
         f"streak rows upserted: {len(streak_rows)}  |  "
         f"aligned rows upserted: {len(aligned_rows)}  "
-        f"({len(aligned_rows)//5} players)"
+        f"({len(aligned_rows) // 5} players)"
     )
 
 
