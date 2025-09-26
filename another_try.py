@@ -1,4 +1,8 @@
-# pip install -U selenium webdriver-manager python-dotenv pandas beautifulsoup4 lxml
+"""
+code for scraping player info for seasons 2013-14
+through 2024-25. This is page 1, it has player age but
+toi is all-inclusive, not EvenStrength, 5vs5.
+"""
 
 import os
 import re
@@ -25,7 +29,7 @@ load_dotenv()  # read SR_EMAIL/SR_PASSWORD (or STATHEAD_*) from .env if present
 
 HR_HOME = "https://www.hockey-reference.com/"
 # Set the season end year you want: 2025 for 2024-25, 2024 for 2023-24, etc.
-SEASON_END_YEAR = 2013
+SEASON_END_YEAR = 2025
 
 # Credentials: SR_* preferred, fallback to STATHEAD_*
 EMAIL = os.getenv("SR_EMAIL") or os.getenv("STATHEAD_EMAIL") or "YOUR_EMAIL_HERE"
@@ -77,17 +81,14 @@ def _extract_rows_from_bs_table(tbl) -> list[dict]:
             return ""
 
         player = get_any(tr, PLAYER_KEYS, allow_th=True)
+        if not player or player == "Player":
+            continue
+
         age = get_any(tr, AGE_KEYS)
         team = get_any(tr, TEAM_KEYS)
         gp = get_any(tr, GP_KEYS)
         toi = get_any(tr, TOI_KEYS)
 
-        if not player or player == "Player":
-            continue
-        age = get_any(AGE_KEYS)
-        team = get_any(TEAM_KEYS)
-        gp = get_any(GP_KEYS)
-        toi = get_any(TOI_KEYS)
         out.append({"Player": player, "Age": age, "GP": gp, "TOI": toi, "Tm": team})
     return out
 
@@ -503,20 +504,33 @@ def step5_open_seasons_dropdown(driver):
     print("STEP 5 ✅ Hovered Seasons (dropdown visible)")
 
 
-def step6_click_skaters_for_season(driver, season_end_year: int):
-    skaters_href = f"/leagues/NHL_{season_end_year}_skaters.html"
-    locator = (By.XPATH, f"//li[@id='header_leagues']//a[@href='{skaters_href}']")
+def step6_go_to_skaters_toi_for_season(driver, season_end_year: int):
+    """
+    Prefer clicking the dropdown link if present; otherwise navigate directly to:
+      /leagues/NHL_<year>_skaters-time-on-ice.html or
+    """
+    href = f"/leagues/NHL_{season_end_year}_skaters-time-on-ice.html"
+    # Try to click from the Seasons dropdown (some pages include it)
     try:
-        link = wait(driver, EC.element_to_be_clickable(locator))
+        locator = (By.XPATH, f"//li[@id='header_leagues']//a[@href='{href}']")
+        link = WebDriverWait(driver, 4).until(EC.element_to_be_clickable(locator))
         ActionChains(driver).move_to_element(link).pause(0.1).click(link).perform()
-        print(f"STEP 6 ✅ Clicked Skaters for {season_end_year}")
+        print(f"STEP 6 ✅ Clicked Skaters (TOI) for {season_end_year}")
     except Exception:
-        driver.get("https://www.hockey-reference.com" + skaters_href)
-        print(f"STEP 6 ✅ Navigated directly to {skaters_href} (fallback)")
+        # Fallback: direct nav works reliably
+        driver.get("https://www.hockey-reference.com" + href)
+        print(f"STEP 6 ✅ Navigated directly to {href} (TOI)")
 
 
 def step7_wait_for_skaters_page(driver, season_end_year: int):
-    wait(driver, EC.url_contains(f"NHL_{season_end_year}_skaters.html"))
+    # Accept either standard or TOI page
+    base = f"NHL_{season_end_year}_skaters"
+    WebDriverWait(driver, 20).until(
+        EC.any_of(
+            EC.url_contains(base + ".html"),
+            EC.url_contains(base + "-time-on-ice.html"),
+        )
+    )
     wait(driver, EC.presence_of_element_located((By.ID, "wrap")))
     print(f"STEP 7 ✅ Skaters page loaded for {season_end_year} (no scraping)")
 
@@ -564,7 +578,8 @@ def main():
 
         # Seasons → Skaters for your year
         step5_open_seasons_dropdown(driver)
-        step6_click_skaters_for_season(driver, SEASON_END_YEAR)
+        # step6_click_skaters_for_season(driver, SEASON_END_YEAR)
+        step6_go_to_skaters_toi_for_season(driver, SEASON_END_YEAR)
         step7_wait_for_skaters_page(driver, SEASON_END_YEAR)
 
         # Scrape one season
