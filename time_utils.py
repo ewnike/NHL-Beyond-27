@@ -11,7 +11,8 @@ Utilities for season formatting and Hockey-Reference page normalization.
     compute_total_toi(df, toi_col="toi")  # mm:ss (avg) or mmmm:ss / HH:MM:SS (total) -> season totals
     attach_season(df, season="24-25")     # or from_filename=Path("...2014.csv")
 
-Author: you
+Author: Eric Winiecke
+September 26, 2025
 """
 
 from __future__ import annotations
