@@ -1,53 +1,709 @@
 .
+├── .DS_Store
 ├── .env
-├── .env.example
 ├── .github
 │   └── workflows
 │       └── pylint.yml
 ├── .gitignore
+├── .pre-commit-config.yaml
 ├── .python-version
+├── .ruff_cache
+│   ├── .gitignore
+│   ├── 0.13.0
+│   │   ├── 10234453832534263789
+│   │   ├── 10417430585927741299
+│   │   ├── 13539590955102322865
+│   │   ├── 16934842992149012434
+│   │   ├── 17085988399686112618
+│   │   ├── 4814323639270101152
+│   │   ├── 5535169426415968714
+│   │   ├── 674180586133340508
+│   │   ├── 7182149925349790833
+│   │   └── 9116475781462661089
+│   ├── 0.6.9
+│   │   ├── 11380753891691639771
+│   │   ├── 15614232814404217920
+│   │   ├── 17180017359070808362
+│   │   ├── 1999759087642453236
+│   │   ├── 3927171695750553370
+│   │   └── 5587137690875437208
+│   └── CACHEDIR.TAG
+├── .selenium_profile_stathead
+│   ├── AmountExtractionHeuristicRegexes
+│   │   └── 3
+│   │       ├── _metadata
+│   │       ├── heuristic_regexes.binarypb
+│   │       └── manifest.json
+│   ├── AutofillStates
+│   │   └── 2025.6.13.84507
+│   │       ├── AD
+│   │       ├── AE
+│   │       ├── AF
+│   │       ├── AG
+│   │       ├── AL
+│   │       ├── AM
+│   │       ├── AO
+│   │       ├── AR
+│   │       ├── AS
+│   │       ├── AT
+│   │       ├── AU
+│   │       ├── AX
+│   │       ├── AZ
+│   │       ├── BA
+│   │       ├── BB
+│   │       ├── BD
+│   │       ├── BE
+│   │       ├── BF
+│   │       ├── BG
+│   │       ├── BH
+│   │       ├── BI
+│   │       ├── BJ
+│   │       ├── BM
+│   │       ├── BN
+│   │       ├── BO
+│   │       ├── BQ
+│   │       ├── BR
+│   │       ├── BS
+│   │       ├── BT
+│   │       ├── BW
+│   │       ├── BY
+│   │       ├── BZ
+│   │       ├── CA
+│   │       ├── CC
+│   │       ├── CD
+│   │       ├── CF
+│   │       ├── CG
+│   │       ├── CH
+│   │       ├── CI
+│   │       ├── CL
+│   │       ├── CM
+│   │       ├── CN
+│   │       ├── CO
+│   │       ├── CR
+│   │       ├── CU
+│   │       ├── CV
+│   │       ├── CX
+│   │       ├── CY
+│   │       ├── CZ
+│   │       ├── DE
+│   │       ├── DJ
+│   │       ├── DK
+│   │       ├── DM
+│   │       ├── DO
+│   │       ├── DZ
+│   │       ├── EC
+│   │       ├── EE
+│   │       ├── EG
+│   │       ├── EH
+│   │       ├── ER
+│   │       ├── ES
+│   │       ├── ET
+│   │       ├── FI
+│   │       ├── FJ
+│   │       ├── FM
+│   │       ├── FO
+│   │       ├── FR
+│   │       ├── GA
+│   │       ├── GB
+│   │       ├── GD
+│   │       ├── GE
+│   │       ├── GF
+│   │       ├── GG
+│   │       ├── GH
+│   │       ├── GL
+│   │       ├── GM
+│   │       ├── GN
+│   │       ├── GP
+│   │       ├── GQ
+│   │       ├── GR
+│   │       ├── GT
+│   │       ├── GW
+│   │       ├── GY
+│   │       ├── HK
+│   │       ├── HN
+│   │       ├── HR
+│   │       ├── HT
+│   │       ├── HU
+│   │       ├── ID
+│   │       ├── IE
+│   │       ├── IL
+│   │       ├── IM
+│   │       ├── IN
+│   │       ├── IQ
+│   │       ├── IR
+│   │       ├── IS
+│   │       ├── IT
+│   │       ├── JE
+│   │       ├── JM
+│   │       ├── JO
+│   │       ├── JP
+│   │       ├── KE
+│   │       ├── KG
+│   │       ├── KH
+│   │       ├── KI
+│   │       ├── KM
+│   │       ├── KN
+│   │       ├── KP
+│   │       ├── KR
+│   │       ├── KW
+│   │       ├── KY
+│   │       ├── KZ
+│   │       ├── LA
+│   │       ├── LB
+│   │       ├── LC
+│   │       ├── LI
+│   │       ├── LK
+│   │       ├── LR
+│   │       ├── LS
+│   │       ├── LT
+│   │       ├── LU
+│   │       ├── LV
+│   │       ├── LY
+│   │       ├── MA
+│   │       ├── MD
+│   │       ├── ME
+│   │       ├── MG
+│   │       ├── MH
+│   │       ├── MK
+│   │       ├── ML
+│   │       ├── MM
+│   │       ├── MN
+│   │       ├── MP
+│   │       ├── MQ
+│   │       ├── MR
+│   │       ├── MS
+│   │       ├── MU
+│   │       ├── MV
+│   │       ├── MW
+│   │       ├── MX
+│   │       ├── MY
+│   │       ├── MZ
+│   │       ├── NA
+│   │       ├── NC
+│   │       ├── NE
+│   │       ├── NG
+│   │       ├── NI
+│   │       ├── NL
+│   │       ├── NO
+│   │       ├── NP
+│   │       ├── NR
+│   │       ├── NU
+│   │       ├── NZ
+│   │       ├── OM
+│   │       ├── PA
+│   │       ├── PE
+│   │       ├── PF
+│   │       ├── PG
+│   │       ├── PH
+│   │       ├── PK
+│   │       ├── PL
+│   │       ├── PR
+│   │       ├── PS
+│   │       ├── PT
+│   │       ├── PW
+│   │       ├── PY
+│   │       ├── QA
+│   │       ├── RE
+│   │       ├── RO
+│   │       ├── RS
+│   │       ├── RU
+│   │       ├── RW
+│   │       ├── SA
+│   │       ├── SB
+│   │       ├── SC
+│   │       ├── SD
+│   │       ├── SE
+│   │       ├── SH
+│   │       ├── SI
+│   │       ├── SJ
+│   │       ├── SK
+│   │       ├── SL
+│   │       ├── SM
+│   │       ├── SN
+│   │       ├── SO
+│   │       ├── SR
+│   │       ├── SS
+│   │       ├── ST
+│   │       ├── SV
+│   │       ├── SY
+│   │       ├── SZ
+│   │       ├── TC
+│   │       ├── TD
+│   │       ├── TG
+│   │       ├── TH
+│   │       ├── TJ
+│   │       ├── TK
+│   │       ├── TL
+│   │       ├── TM
+│   │       ├── TN
+│   │       ├── TO
+│   │       ├── TR
+│   │       ├── TT
+│   │       ├── TV
+│   │       ├── TW
+│   │       ├── TZ
+│   │       ├── UA
+│   │       ├── UG
+│   │       ├── US
+│   │       ├── UY
+│   │       ├── UZ
+│   │       ├── VC
+│   │       ├── VE
+│   │       ├── VG
+│   │       ├── VI
+│   │       ├── VN
+│   │       ├── VU
+│   │       ├── WF
+│   │       ├── WS
+│   │       ├── XK
+│   │       ├── YE
+│   │       ├── YT
+│   │       ├── ZA
+│   │       ├── ZM
+│   │       ├── ZW
+│   │       ├── _metadata
+│   │       └── manifest.json
+│   ├── CertificateRevocation
+│   │   └── 10043
+│   │       ├── LICENSE
+│   │       ├── _metadata
+│   │       ├── crl-set
+│   │       └── manifest.json
+│   ├── ChromeFeatureState
+│   ├── CookieReadinessList
+│   │   └── 2024.11.26.0
+│   │       ├── LICENSE
+│   │       ├── _metadata
+│   │       ├── cookie-readiness-list.json
+│   │       └── manifest.json
+│   ├── Crowd Deny
+│   │   └── 2025.9.18.60
+│   │       ├── Preload Data
+│   │       ├── _metadata
+│   │       └── manifest.json
+│   ├── Default
+│   │   ├── Account Web Data
+│   │   ├── Account Web Data-journal
+│   │   ├── Affiliation Database
+│   │   ├── Affiliation Database-journal
+│   │   ├── AutofillStrikeDatabase
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── BookmarkMergedSurfaceOrdering
+│   │   ├── BrowsingTopicsSiteData
+│   │   ├── BrowsingTopicsSiteData-journal
+│   │   ├── BrowsingTopicsState
+│   │   ├── BudgetDatabase
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── Cache
+│   │   │   ├── Cache_Data
+│   │   │   └── No_Vary_Search
+│   │   ├── ClientCertificates
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── Code Cache
+│   │   │   ├── js
+│   │   │   └── wasm
+│   │   ├── Cookies
+│   │   ├── Cookies-journal
+│   │   ├── DIPS
+│   │   ├── DawnGraphiteCache
+│   │   │   ├── data_0
+│   │   │   ├── data_1
+│   │   │   ├── data_2
+│   │   │   ├── data_3
+│   │   │   └── index
+│   │   ├── DawnWebGPUCache
+│   │   │   ├── data_0
+│   │   │   ├── data_1
+│   │   │   ├── data_2
+│   │   │   ├── data_3
+│   │   │   └── index
+│   │   ├── Download Service
+│   │   │   ├── EntryDB
+│   │   │   └── Files
+│   │   ├── Extension Rules
+│   │   │   ├── 000003.log
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── MANIFEST-000001
+│   │   ├── Extension Scripts
+│   │   │   ├── 000003.log
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── MANIFEST-000001
+│   │   ├── Extension State
+│   │   │   ├── 000003.log
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   ├── LOG.old
+│   │   │   └── MANIFEST-000001
+│   │   ├── Favicons
+│   │   ├── Favicons-journal
+│   │   ├── Feature Engagement Tracker
+│   │   │   ├── AvailabilityDB
+│   │   │   └── EventDB
+│   │   ├── GCM Store
+│   │   │   ├── 000003.log
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   ├── LOG.old
+│   │   │   └── MANIFEST-000001
+│   │   ├── GPUCache
+│   │   │   ├── data_0
+│   │   │   ├── data_1
+│   │   │   ├── data_2
+│   │   │   ├── data_3
+│   │   │   └── index
+│   │   ├── History
+│   │   ├── History-journal
+│   │   ├── LOCK
+│   │   ├── LOG
+│   │   ├── LOG.old
+│   │   ├── Local Storage
+│   │   │   └── leveldb
+│   │   ├── Login Data
+│   │   ├── Login Data For Account
+│   │   ├── Login Data For Account-journal
+│   │   ├── Login Data-journal
+│   │   ├── MediaDeviceSalts
+│   │   ├── MediaDeviceSalts-journal
+│   │   ├── Network Action Predictor
+│   │   ├── Network Action Predictor-journal
+│   │   ├── Network Persistent State
+│   │   ├── PersistentOriginTrials
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── Preferences
+│   │   ├── PreferredApps
+│   │   ├── Reporting and NEL
+│   │   ├── Reporting and NEL-journal
+│   │   ├── SCT Auditing Pending Reports
+│   │   ├── Safe Browsing Cookies
+│   │   ├── Safe Browsing Cookies-journal
+│   │   ├── Search Logos
+│   │   ├── Secure Preferences
+│   │   ├── Segmentation Platform
+│   │   │   ├── SegmentInfoDB
+│   │   │   ├── SignalDB
+│   │   │   └── SignalStorageConfigDB
+│   │   ├── ServerCertificate
+│   │   ├── ServerCertificate-journal
+│   │   ├── Session Storage
+│   │   │   ├── 000005.ldb
+│   │   │   ├── 000083.log
+│   │   │   ├── 000084.ldb
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   ├── LOG.old
+│   │   │   └── MANIFEST-000001
+│   │   ├── Sessions
+│   │   │   ├── Session_13402901956509542
+│   │   │   ├── Session_13402902875439795
+│   │   │   ├── Tabs_13402901956729236
+│   │   │   └── Tabs_13402902875629874
+│   │   ├── Shared Dictionary
+│   │   │   ├── cache
+│   │   │   ├── db
+│   │   │   └── db-journal
+│   │   ├── SharedStorage
+│   │   ├── Shortcuts
+│   │   ├── Shortcuts-journal
+│   │   ├── Site Characteristics Database
+│   │   │   ├── 000003.log
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   ├── LOG.old
+│   │   │   └── MANIFEST-000001
+│   │   ├── Sync Data
+│   │   │   └── LevelDB
+│   │   ├── Top Sites
+│   │   ├── Top Sites-journal
+│   │   ├── TransportSecurity
+│   │   ├── Trust Tokens
+│   │   ├── Trust Tokens-journal
+│   │   ├── VideoDecodeStats
+│   │   │   ├── LOCK
+│   │   │   └── LOG
+│   │   ├── Web Data
+│   │   ├── Web Data-journal
+│   │   ├── WebStorage
+│   │   │   ├── 1
+│   │   │   ├── QuotaManager
+│   │   │   └── QuotaManager-journal
+│   │   ├── blob_storage
+│   │   │   └── fe37d297-054c-4adf-8ec2-0497d61fb84d
+│   │   ├── chrome_cart_db
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── commerce_subscription_db
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── discount_infos_db
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── discounts_db
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── heavy_ad_intervention_opt_out.db
+│   │   ├── heavy_ad_intervention_opt_out.db-journal
+│   │   ├── optimization_guide_hint_cache_store
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── parcel_tracking_db
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   └── LOG.old
+│   │   ├── shared_proto_db
+│   │   │   ├── 000003.log
+│   │   │   ├── CURRENT
+│   │   │   ├── LOCK
+│   │   │   ├── LOG
+│   │   │   ├── LOG.old
+│   │   │   ├── MANIFEST-000001
+│   │   │   └── metadata
+│   │   └── trusted_vault.pb
+│   ├── DevToolsActivePort
+│   ├── FileTypePolicies
+│   │   └── 67
+│   │       ├── _metadata
+│   │       ├── download_file_types.pb
+│   │       └── manifest.json
+│   ├── First Run
+│   ├── FirstPartySetsPreloaded
+│   │   └── 2025.7.24.0
+│   │       ├── LICENSE
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── sets.json
+│   ├── GrShaderCache
+│   │   ├── data_0
+│   │   ├── data_1
+│   │   ├── data_2
+│   │   ├── data_3
+│   │   └── index
+│   ├── GraphiteDawnCache
+│   │   ├── data_0
+│   │   ├── data_1
+│   │   ├── data_2
+│   │   ├── data_3
+│   │   └── index
+│   ├── Last Version
+│   ├── Local State
+│   ├── MEIPreload
+│   │   └── 1.0.7.1744928549
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── preloaded_data.pb
+│   ├── NativeMessagingHosts
+│   ├── OnDeviceHeadSuggestModel
+│   │   └── 20250805.789100898.14
+│   │       ├── _metadata
+│   │       ├── cr_en-us_500000_index.bin
+│   │       └── manifest.json
+│   ├── OpenCookieDatabase
+│   │   └── 2024.10.17.0
+│   │       ├── LICENSE
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── open_cookie_database.json
+│   ├── OptimizationHints
+│   │   └── 540
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── optimization-hints.pb
+│   ├── OriginTrials
+│   │   └── 1.0.0.17
+│   │       ├── _metadata
+│   │       └── manifest.json
+│   ├── PKIMetadata
+│   │   └── 1431
+│   │       ├── _metadata
+│   │       ├── crs.pb
+│   │       ├── ct_config.pb
+│   │       ├── kp_pinslist.pb
+│   │       └── manifest.json
+│   ├── PrivacySandboxAttestationsPreloaded
+│   ├── ProbabilisticRevealTokenRegistry
+│   │   └── 2025.8.19.0
+│   │       ├── LICENSE
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── prt_domains.json
+│   ├── RecoveryImproved
+│   ├── SSLErrorAssistant
+│   │   └── 7
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── ssl_error_assistant.pb
+│   ├── SafetyTips
+│   │   └── 3082
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── safety_tips.pb
+│   ├── ShaderCache
+│   │   ├── data_0
+│   │   ├── data_1
+│   │   ├── data_2
+│   │   ├── data_3
+│   │   └── index
+│   ├── Subresource Filter
+│   │   ├── Indexed Rules
+│   │   │   └── 37
+│   │   └── Unindexed Rules
+│   │       └── 9.60.0
+│   ├── TpcdMetadata
+│   │   └── 2025.9.19.1
+│   │       ├── _metadata
+│   │       ├── manifest.json
+│   │       └── metadata.pb
+│   ├── TrustTokenKeyCommitments
+│   │   └── 2025.8.25.1
+│   │       ├── LICENSE
+│   │       ├── _metadata
+│   │       ├── keys.json
+│   │       └── manifest.json
+│   ├── Variations
+│   ├── WasmTtsEngine
+│   ├── WidevineCdm
+│   ├── ZxcvbnData
+│   │   └── 3
+│   │       ├── _metadata
+│   │       ├── english_wikipedia.txt
+│   │       ├── female_names.txt
+│   │       ├── male_names.txt
+│   │       ├── manifest.json
+│   │       ├── passwords.txt
+│   │       ├── ranked_dicts
+│   │       ├── surnames.txt
+│   │       └── us_tv_and_film.txt
+│   ├── chrome_debug.log
+│   ├── component_crx_cache
+│   │   ├── 03e9a2f2431495796e0fa031f02e77bde22dae866f849f83b327f1b463e2e72f
+│   │   ├── 2638e3c2d1fa1d417bfdc31dd21bc938f106d3b436a6488b41b014ca9e2b7541
+│   │   ├── 27bc77c5d480fd7b3f9bdd535383330c206a1b003820528e1cfe9448e97678fc
+│   │   ├── 2e65bcb0c26e68aefd4c8a3a3368f86f46a81b849a25c43193d5119a88f53edf
+│   │   ├── 384af3480fb8ea633d366fe372178bc4d9cc717858995d3deabc32500c4de51c
+│   │   ├── 3eb16d6c28b502ac4cfee8f4a148df05f4d93229fa36a71db8b08d06329ff18a
+│   │   ├── 4eec7d35d2705071876509626b921cd650d807fe3154e0d9af52859901c9b67b
+│   │   ├── 545666a4efd056351597bb386aea1368105ededc976ed5650d8682daab9f37ff
+│   │   ├── 9606228ec6a3a88a63806816208ca864cba3451f054480b8fefb35f7aac5f9ae
+│   │   ├── 965e791ec2a53445950178e7c995cee6d2ba1905fac296ab979276de65db6c62
+│   │   ├── cf1bd60480ee975563d5cd068e349b313339ffe7f8bef054a0b3fde00c117c2f
+│   │   ├── e444ba601ac72b669514e6788bc458ac6b4a3f4400f18ad9b297a84eb27009e5
+│   │   ├── fa0ce4252841c4f6d69b413a82aee8f2070eefc67e95b0ecc5ed67b8b2c18fc2
+│   │   └── metadata.json
+│   ├── extensions_crx_cache
+│   │   └── metadata.json
+│   ├── first_party_sets.db
+│   ├── first_party_sets.db-journal
+│   ├── optimization_guide_model_store
+│   │   ├── 13
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 15
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 2
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 20
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 24
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 25
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 26
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   ├── 45
+│   │   │   └── E6DC4029A1E4B4C1
+│   │   └── 9
+│   │       └── E6DC4029A1E4B4C1
+│   └── segmentation_platform
+│       ├── ukm_db
+│       └── ukm_db-wal
 ├── .vscode
 │   └── settings.json
 ├── LICENSE
 ├── Makefile
 ├── README.md
+├── another_try.py
+├── another_try_pg2.py
+├── backups
+│   ├── .gitkeep
+│   ├── .tmp_nhl_beyond_2025-09-20_091813.dump
+│   ├── nhl_beyond_2025-09-20_095011.dump
+│   ├── nhl_beyond_2025-09-20_095011.dump.sha256
+│   ├── nhl_beyond_2025-09-20_103038.dump
+│   ├── nhl_beyond_2025-09-20_103038.dump.sha256
+│   ├── nhl_beyond_2025-09-20_103341.dump
+│   ├── nhl_beyond_2025-09-20_103341.dump.sha256
+│   ├── nhl_beyond_2025-09-20_144502.dump
+│   ├── nhl_beyond_2025-09-20_144502.dump.sha256
+│   ├── pg_dump_2025-09-20_081919.log
+│   ├── pg_dump_2025-09-20_085657.log
+│   ├── pg_dump_2025-09-20_085909.log
+│   ├── pg_dump_2025-09-20_090514.log
+│   ├── pg_dump_2025-09-20_090800.log
+│   ├── pg_dump_2025-09-20_090951.log
+│   ├── pg_dump_2025-09-20_091813.log
+│   ├── pg_dump_2025-09-20_095011.log
+│   ├── pg_dump_2025-09-20_103038.log
+│   ├── pg_dump_2025-09-20_103341.log
+│   ├── pg_dump_2025-09-20_144502.log
+│   └── run_debug.log
+├── build_player_five_year_aligned_cap.py
 ├── build_player_five_year_aligned_z.py
 ├── build_player_five_year_aligned_z_cohort.py
 ├── build_player_streaks_and_aligned.py
+├── build_ref_hockey.py
 ├── constants.py
-├── data
-│   ├── download
-│   ├── extracted
-│   └── peak_player_season_stats.csv
+├── data_pipeline.py
+├── data_processing_utils.py
 ├── db_utils.py
+├── diff_players_by_season.py
 ├── docs
 │   └── project-structure.txt
+├── download_ref_hockey.py
+├── drop_goalies_inplace.py
 ├── ingest_peak_season.py
 ├── log_utils.py
-├── logs
-│   └── app.log
+├── nhl_beyond_2025-09-20_103341.dump
+├── nhl_beyond_2025-09-20_103341.dump.sha256
 ├── pyproject.toml
 ├── requirements.txt
 ├── s3_utils.py
-├── scrape_player_caphit.py
-├── scrape_team_payroll.py
+├── scrap_player_caphit.py
 ├── scraping_utils.py
 ├── scripts
-│   └── gen_tree.sh
+│   ├── dump_db.sh
+│   ├── gen_tree.sh
+│   └── restore_latest_from_s3.sh
 ├── src
-│   ├── nhl_beyond27
-│   │   ├── __init__.py
-│   │   ├── builders
-│   │   ├── cli.py
-│   │   ├── db
-│   │   └── pipeline.py
-│   └── nhl_beyond27.egg-info
-│       ├── PKG-INFO
-│       ├── SOURCES.txt
-│       ├── dependency_links.txt
-│       ├── entry_points.txt
-│       ├── requires.txt
-│       └── top_level.txt
+│   └── nhl_beyond27
+│       ├── __init__.py
+│       ├── cli.py
+│       └── pipeline.py
+├── test_pps.py
+├── test_script.py
+├── tests
+│   ├── jup_note.txt
+│   └── test_fix_std_one_season.py
+├── time_utils.py
+├── upload_ref_hockey.py
 └── view_utils.py
 
-15 directories, 36 files
+157 directories, 550 files
