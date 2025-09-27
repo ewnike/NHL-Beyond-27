@@ -8,45 +8,24 @@ September 26, 2025.
 
 from __future__ import annotations
 
-import argparse
-import logging
 from pathlib import Path
 
-from constants import S3_BUCKET_NAME  # keep your existing constants  local_download_path
+from constants import S3_BUCKET_NAME
 from dotenv import load_dotenv
-from s3_utils import download_prefix
-
-# If you prefer constants, you can also define:
-# S3_PREFIX = "nhl_player_seasons_data/"
-# S3_PREFIX_II = "hockey_ref_even_strength/"
+from log_utils import setup_logger  # ✅ your utility
+from s3_utils import download_prefix  # uses the same logger
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Download two S3 folders into local data dir")
-    ap.add_argument("--prefix1", default="nhl_player_seasons_data/", help="First S3 prefix")
-    ap.add_argument("--prefix2", default="hockey_ref_even_strength/", help="Second S3 prefix")
-    ap.add_argument(
-        "--bucket", default=None, help="S3 bucket (defaults to constants.S3_BUCKET_NAME)"
-    )
-    ap.add_argument("--out1", default="data/seasons", help="Local folder for prefix1")
-    ap.add_argument("--out2", default="data/even_strength", help="Local folder for prefix2")
-    ap.add_argument("--overwrite", action="store_true", help="Overwrite existing files")
-    ap.add_argument("--log-level", default="INFO")
-    args = ap.parse_args()
-
     load_dotenv()
-    logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
-    bucket = args.bucket or S3_BUCKET_NAME
+    logger = setup_logger(None, level=20)  # INFO; None = root (your util adds console+file)
+    # optionally change log dir via LOG_DIR env var
 
-    out1 = Path(args.out1)
-    out2 = Path(args.out2)
-
-    n1 = download_prefix(bucket, args.prefix1, out1, overwrite=args.overwrite)
-    n2 = download_prefix(bucket, args.prefix2, out2, overwrite=args.overwrite)
-
-    logging.getLogger(__name__).info(
-        "Downloaded: %d files -> %s ; %d files -> %s", n1, out1, n2, out2
-    )
+    n1 = download_prefix(S3_BUCKET_NAME, "nhl_player_seasons_data/", Path("data/seasons"))
+    n2 = download_prefix(S3_BUCKET_NAME, "hockey_ref_even_strength/", Path("data/even_strength"))
+    n3 = download_prefix(S3_BUCKET_NAME, "goalies/", Path("data/goalies"))
+    n4 = download_prefix(S3_BUCKET_NAME, "player_cap_hits/", Path("data/cap_hits"))
+    logger.info("Downloads complete — seasons=%d, even=%d, goalies=%d, cap_hits=%d", n1, n2, n3, n4)
 
 
 if __name__ == "__main__":

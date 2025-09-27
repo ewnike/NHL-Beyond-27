@@ -35,12 +35,6 @@ EMAIL = os.getenv("SR_EMAIL") or os.getenv("STATHEAD_EMAIL") or "YOUR_EMAIL_HERE
 PASSWORD = os.getenv("SR_PASSWORD") or os.getenv("STATHEAD_PASSWORD") or "YOUR_PASSWORD_HERE"
 
 # We will look for either SkaterStandard or the classic skaters table
-# PLAYER_KEYS = ("name_display", "player")
-# TEAM_KEYS = ("team_name_abbr", "team_id")
-# GP_KEYS = ("games", "games_played")
-# TOI_KEYS = ("time_on_ice",)
-# AGE_KEYS = ("age",)
-# Keys for the TOI page (robust across SR variants)
 PLAYER_KEYS = ("name_display", "player")
 TEAM_KEYS = ("team_name_abbr", "team_id")
 POS_KEYS = ("pos",)
@@ -51,10 +45,7 @@ CFREL_KEYS = ("corsi_for_pct_rel", "cf_pct_rel", "cf% r", "cf%_rel", "corsi_rel"
 
 
 # If you want to anchor on your visible table first:
-XPATH_TABLE = (
-    # "/html/body/div[4]/div[5]/div[1]/div[4]/div[2]/table"  # your SkaterStandard <table> path
-    "/html/body/div[4]/div[5]/div[1]/div[2]/table/tbody"
-)
+XPATH_TABLE = "/html/body/div[4]/div[5]/div[1]/div[2]/table/tbody"
 
 
 # =========================

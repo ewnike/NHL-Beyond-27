@@ -1,3 +1,21 @@
+"""
+This is a postgres view.
+A view in SQL is a virtual table defined by a saved query.
+When you query a view, the database runs its underlying SELECT and returns the result as if it were a table.
+Why use views
+Abstraction: hide complex joins/logic behind a simple name
+Security: expose only selected columns/rows (grant privileges on the view)
+Reusability: centralize business logic once, reuse everywhere
+Consistency: everyone sees the same computed definition
+Key points
+Views typically do not store data; they read from base tables each time.
+Exception: materialized views persist the result and must be refreshed.
+Many DBs allow updatable views (INSERT/UPDATE/DELETE) if the view is simple (e.g., single base table, no aggregates/distinct), otherwise it’s read-only.
+
+Author: Eric Winiecke
+September 2025.
+"""
+
 # view_utils.py
 
 ONE_ROW_VIEW_SQL = """

@@ -34,6 +34,7 @@ __all__ = [
     "normalize_columns",
     "compute_total_toi",
     "attach_season",
+    "seconds_to_hms",
 ]
 
 # ---------------------------
@@ -127,7 +128,7 @@ def _to_seconds_totalish(s: str) -> int | None:
     return None
 
 
-def _seconds_to_hms(x: int | None) -> str:
+def seconds_to_hms(x: int | None) -> str:
     if x is None:
         return ""
     h, r = divmod(int(x), 3600)
@@ -184,7 +185,7 @@ def compute_total_toi(df: pd.DataFrame, *, toi_col: str = "toi") -> pd.DataFrame
             out["toi_seconds_total"] = tentative.astype("Int64")
 
     out["toi_total_hms"] = out["toi_seconds_total"].map(
-        lambda x: _seconds_to_hms(int(x)) if pd.notna(x) else ""
+        lambda x: seconds_to_hms(int(x)) if pd.notna(x) else ""
     )
     return out
 

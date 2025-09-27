@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+# demo_build_aligned_cap.py
+# One script: 10-line DB read + 20-line merge + cap-hit concatenation
+
+import os
+import re
+from pathlib import Path
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+# 0) Connection (Postgres example). Set: export DATABASE_URL="postgresql+psycopg://user:pass@host:5432/db"
+engine = create_engine(os.getenv("DATABASE_URL"))
+
+# 1) (≈10 lines) Read a whole table to a pandas DataFrame
+aligned = pd.read_sql_table("player_five_year_aligned", con=engine, schema="public")
+print("aligned rows:", len(aligned))
+print(aligned.head(2), "\n")
+
+# 2) Normalize join keys (player + season_end)
+#    - aligned.season is "13-14", "14-15", etc. -> season_end = 2014, 2015, ...
+aligned["_player_key"] = (
+    aligned["player"].astype(str).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()
+)
+# extract the trailing 2 digits of "YY-YY" and add 2000 => end year
+end2 = aligned["season"].astype(str).str.extract(r"(\d{2})-(\d{2})").iloc[:, 1]
+aligned["_season_end"] = pd.to_numeric(end2, errors="coerce") + 2000
+
+# 3) Concatenate all cap-hit CSVs (e.g., data/inputs/cap_hits/player_cap_hits_2014.csv)
+cap_dir = Path("data/inputs/cap_hits")
+cap_files = sorted(cap_dir.glob("player_cap_hits_*.csv"))
+if not cap_files:
+    raise SystemExit(f"No cap-hit files found in {cap_dir.resolve()}")
+
+caps = []
+for f in cap_files:
+    # season_end from filename: player_cap_hits_2014.csv -> 2014
+    yr = int(re.search(r"(\d{4})", f.stem).group(1))
+    c = pd.read_csv(f, dtype=str, keep_default_na=False)
+
+    # expect columns: "player name", "capHit"
+    if "player name" not in c.columns or ("capHit" not in c.columns and "cap_hit" not in c.columns):
+        raise SystemExit(
+            f"{f}: expected 'player name' and 'capHit' columns; saw {list(c.columns)[:8]}"
+        )
+
+    cap_col = "capHit" if "capHit" in c.columns else "cap_hit"
+    c["_player_key"] = (
+        c["player name"].astype(str).str.replace(r"\s+", " ", regex=True).str.strip().str.lower()
+    )
+    c["_season_end"] = yr
+    c["_cap_hit"] = pd.to_numeric(
+        c[cap_col].astype(str).str.replace(r"[^\d\.-]", "", regex=True), errors="coerce"
+    )
+    caps.append(c[["_player_key", "_season_end", "_cap_hit"]])
+
+cap = pd.concat(caps, ignore_index=True).drop_duplicates(
+    ["_player_key", "_season_end"], keep="last"
+)
+print("cap rows (unique per player-season):", len(cap), "\n")
+
+# 4) (≈20 lines) Merge and save
+merged = aligned.merge(cap, on=["_player_key", "_season_end"], how="left")
+merged["cap_hit_usd"] = merged["_cap_hit"].map(lambda v: f"${int(v):,}" if pd.notna(v) else "")
+merged = merged.drop(columns=["_player_key"])  # keep your original columns tidy
+
+# 5) Outputs: CSV + back to DB (new table)
+out_csv = Path("data/outputs/player_five_year_aligned_cap.csv")
+out_csv.parent.mkdir(parents=True, exist_ok=True)
+merged.to_csv(out_csv, index=False)
+print(f"CSV written: {out_csv} (rows={len(merged)})")
+
+merged.to_sql(
+    "player_five_year_aligned_cap", engine, schema="public", if_exists="replace", index=False
+)
+print("DB table written: public.player_five_year_aligned_cap")
+
+# Optional: quick sanity prints
+print(merged[["player", "season", "_season_end", "cap_hit_usd"]].head(10))

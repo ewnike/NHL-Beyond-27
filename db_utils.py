@@ -9,6 +9,7 @@ Date: September 2025
 
 import logging
 import os
+from collections.abc import Sequence
 from urllib.parse import quote_plus
 
 from dotenv import load_dotenv
@@ -329,3 +330,45 @@ def create_table(engine, metadata, table):
     """
     metadata.create_all(engine, tables=[table])  # ✅ Create only the passed table
     logger.info(f"Table '{table.name}' created or verified.")
+
+
+# --------- Bulk COPY + upsert helpers ---------------------------------------
+def copy_csv_to_table(
+    conn,
+    table: str,
+    csv_path: str,
+    columns_in_order: Sequence[str],
+    force_null_extra: Sequence[str] | None = None,
+    schema: str | None = None,
+) -> None:
+    """
+    COPY a CSV into a table efficiently. Assumes CSV header matches columns_in_order.
+    If `schema` is None we assume a temp table name; otherwise we write schema-qualified.
+    """
+    tbl = f'"{table}"' if schema is None else f'"{schema}"."{table}"'
+    cols = ", ".join(f'"{c}"' for c in columns_in_order)
+    with conn.cursor() as cur, open(csv_path, newline="") as f:
+        # Use COPY ... FROM STDIN WITH (FORMAT CSV, HEADER)
+        cur.copy_expert(f"COPY {tbl} ({cols}) FROM STDIN WITH (FORMAT csv, HEADER true)", f)
+
+
+def upsert_from_stage(
+    conn,
+    dest_table: str,
+    stage_table: str,
+    columns_in_order: Sequence[str],
+    conflict_cols: Sequence[str],
+    schema: str = "public",
+) -> None:
+    ins_cols = ", ".join(f'"{c}"' for c in columns_in_order)
+    col_list = ", ".join(f'"{c}"' for c in columns_in_order)
+    conflict_cols_sql = ", ".join(f'"{c}"' for c in conflict_cols)
+    update_cols = [c for c in columns_in_order if c not in conflict_cols]
+    update_set = ", ".join([f'"{c}" = EXCLUDED."{c}"' for c in update_cols])
+
+    with conn.cursor() as cur:
+        cur.execute(
+            f'INSERT INTO "{schema}"."{dest_table}" ({ins_cols}) '
+            f'SELECT {col_list} FROM "{stage_table}" '
+            f"ON CONFLICT ({conflict_cols_sql}) DO UPDATE SET {update_set}"
+        )
