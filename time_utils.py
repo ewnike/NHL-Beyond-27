@@ -216,3 +216,46 @@ def attach_season(
         if s:
             out["season"] = s
     return out
+
+
+# ---------------------------------
+# Season total EV TOI in minutes,
+# as a decimal with 2 places.
+# ---------------------------------
+
+
+def compute_even_strength_minutes(
+    df: pd.DataFrame,
+    *,
+    seconds_per_game_col: str = "toi_seconds_total_ev",  # per-game EV seconds
+    gp_col: str = "gp",
+    out_minutes_col: str = "toi_even_strength_min",  # numeric minutes (2-dec)
+    out_minutes_str_col: str | None = "toi_even_strength_min_str",  # optional "123.45"
+) -> pd.DataFrame:
+    """
+    Season-total EV TOI (in minutes with two decimals) from per-game EV seconds × GP.
+
+    Adds:
+      - out_minutes_col: float with 2 decimals (NaN if missing inputs)
+      - out_minutes_str_col: optional string formatted to 2 decimals
+    """
+    out = df.copy()
+
+    if seconds_per_game_col not in out.columns:
+        return out
+
+    per_game_sec = pd.to_numeric(out[seconds_per_game_col], errors="coerce")
+    gp = pd.to_numeric(out.get(gp_col, pd.Series(index=out.index)), errors="coerce")
+
+    total_sec = (per_game_sec.fillna(0) * gp.fillna(0)).where(per_game_sec.notna() & gp.notna())
+
+    minutes = total_sec / 60.0
+    # round to 2 decimals but keep as float
+    out[out_minutes_col] = minutes.round(2)
+
+    if out_minutes_str_col:
+        out[out_minutes_str_col] = out[out_minutes_col].map(
+            lambda v: f"{v:.2f}" if pd.notna(v) else ""
+        )
+
+    return out

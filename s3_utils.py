@@ -105,6 +105,7 @@ from botocore.exceptions import ClientError
 from log_utils import setup_logger  # ✅ use your utility
 
 logger = setup_logger(__name__)  # ✅ named logger using your format/handlers
+
 _s3 = boto3.client("s3")
 
 

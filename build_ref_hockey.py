@@ -16,6 +16,9 @@ Outputs:
   data/outputs/hockeyref_even_concat.csv
   data/outputs/hockeyref_final.csv
   (plus a few diagnostics when helpful)
+
+Authored by: Eric Winiecke
+September 26, 2025.
 """
 
 from __future__ import annotations
