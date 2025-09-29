@@ -1,17 +1,34 @@
+## NHL Beyond 27, the Study
 
-Our study will include only even strength, 5 on 5 situations.
+### Motivation
+This study is motivated by work from Elijah Cavan, Jiguo Cao, and Tim B. Swartz. Their paper, *NHL Aging Curves using Functional Principal Component Analysis* (published May 2, 2025), analyzes all NHL players from 1920–2022 and “restricts the data to include only player-years 22–34. We also limit the data to players who had an NHL career lasting at least seven seasons. This provides us with 1,785 forwards and 883 defencemen.” Using functional principal component analysis (FPCA), they “observed concave shapes with peaks around 26–28 years,” meaning player performance peaks at roughly age 27.
 
-EV = Even Strength — i.e., hockey played with the same number of skaters on each side (no power play or penalty kill).
+### Our sample
+We restrict our cohort using the following criteria:
 
-Minutes filter: Require a minimum EV TOI per season (e.g., ≥ 500 EV minutes) to avoid noise.
+1. NHL seasons **2013–14 through 2024–25**  
+2. Skaters with **five consecutive** NHL seasons and an **average even-strength TOI ≥ 500 minutes per season**  
+3. Goaltenders **excluded**  
+4. Player ages **25–29**, inclusive  
+5. Final sample size: **282 skaters**
 
-Age definition: NHL standard is age on Feb 1 of the season. Compute integer age that way.
-a player’s “age-27 season” as the season in which he is 27 years old on Feb 1 of that season. Then use that entire season’s 5v5 Corsi metrics.
-Why this is better:
-Matches NHL age convention (rosters, public datasets).
-Keeps data aligned to one season (same team/linemates/context).
-Avoids slicing seasons across calendar years.
-So for 2015–16, “age-27 season” = born 1988-02-02 through 1989-02-01 (inclusive). You’d use each player’s full 2015–16 5v5 CF/CA (with a minutes filter), not a Feb-to-Jan calendar window.
+### Performance measure (proxy)
+We use **Corsi**—the differential in all shot attempts at even strength—as our primary proxy for a player’s peak and decline. Specifically, we track on-ice 5-on-5 Corsi metrics for each player-season to construct age trajectories.
+
+### Selection bias and era notes
+Cavan et al. note selection bias: the imFunPCA method accounts for retention of more skilled players after peak performance. Two caveats for our design: (i) the average NHL career is ~4.5 years, so finding players with five full consecutive seasons is uncommon; (ii) to focus on a consistent modern era, we begin after the 2012–13 lockout, using seasons **2013–14 through 2024–25**. We make no exceptions for the **2019–20 COVID-affected season**.
+
+### Rationale
+Our stricter inclusion rules (five consecutive seasons and a minimum even-strength TOI) reduce noise in age-curve estimation by (a) ensuring sufficient within-player data to support functional trajectory modeling, and (b) filtering out low-usage seasons that can distort rate metrics. Using Corsi provides a possession-based, repeatable signal that is less sensitive than points to linemates, special-teams usage, and shooting variance, and is consistently available across the study window. Limiting to **even strength** further mitigates confounds from special-teams deployment. We acknowledge trade-offs: these choices introduce **survivorship bias** (favoring players durable enough to log five straight seasons) and do not fully eliminate contextual effects (quality of teammates/opposition, zone starts, score/venue effects). Nevertheless, they improve comparability across ages and players, yielding more stable estimates of peak and decline for skaters in the modern era.
+
+### Age definition
+We follow the NHL convention: a player’s age for a given season is his age on **February 1** of that season (integer years). Thus, a player’s “**age-27 season**” is the season in which he is 27 on February 1. We then use that season’s full **5-on-5 Corsi** metrics.
+
+### Why this choice
+- Aligns with NHL roster and public-data standards  
+- Keeps each player’s data within a single season (consistent team/linemates/context)  
+- Avoids splitting seasons across calendar years
+
 
 Outcome: Prefer score- & venue-adjusted 5v5 CF% (or at least raw 5v5 CF%). Also keep CF/60 and CA/60 as secondary outcomes.
 
