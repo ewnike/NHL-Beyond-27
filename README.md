@@ -76,27 +76,79 @@ Swap `YOUR_PASSWORD` for your actual password (keep the quotes).
 ## Project layout
 ```mermaid
 flowchart TD
-  A[NHL-Beyond-27/] --> B[src/]
-  B --> C[nhl_beyond27/]
-  C --> C1[__init__.py]
-  C --> C2[cli.py]
-  C --> C3[settings.py]
-  C --> C4[logging_utils.py]
-  C --> C5[backup.py]
-  C --> C6[restore.py]
-  C --> C7[pipeline.py]
-  C --> D[builders/]
-  D --> D1[__init__.py]
-  D --> D2[ingest.py]
-  D --> D3[aligned.py]
-  D --> D4[z_player.py]
-  D --> D5[z_cohort.py]
-  C --> E[db/]
-  E --> E1[__init__.py]
-  E --> E2[utils.py]
-  A --> F[tests/]
-  F --> F1[test_pipeline_sanity.py]
-  A --> G[pyproject.toml]
-  A --> H[.pylintrc]
-  A --> I[.pre-commit-config.yaml]
-  A --> J[docs/project-structure.txt]
+  A[NHL-Beyond-27/]
+
+  subgraph S[configs & meta]
+    G[pyproject.toml]
+    H[.pre-commit-config.yaml]
+    P[.env (ignored)]
+    R[README.md]
+  end
+
+  subgraph N[notebooks (top-level files)]
+    N1[NHL_Beyond27_Book1_EH_download_and_DB.ipynb]
+    N2[NHL_Beyond27_Book2_HockeyRef_Scrape_and_Cleaning.ipynb]
+    N3[NHL_Beyond27_Book3_Analysis.ipynb]
+  end
+
+  subgraph U[utilities]
+    U1[constants.py]
+    U2[log_utils.py]
+    U3[s3_utils.py]
+    U4[time_utils.py]
+    U5[db_utils.py]
+  end
+
+  subgraph W[scrapers]
+    W1[scrap_hcky_ref_evenstrength.py]
+    W2[scrap_hockey_ref_player.py]
+    W3[download_ref_hockey.py]
+  end
+
+  subgraph PIP[pipeline & build]
+    P1[ingest_peak_season.py]
+    P2[build_player_streaks_and_aligned.py]
+    P3[build_player_five_year_aligned_z.py]
+    P4[build_ref_hockey.py]
+    P5[drop_goalies_etal_inplace.py]
+    P6[build_ref_hockey_data_table.py]
+    P7[diff_players_by_season.py]
+  end
+
+  subgraph D[data/]
+    D1[seasons/]
+    D2[even_strength/]
+    D3[goalies/]
+    D4[outputs/]
+    D5[peak_player_season_stats.csv]
+  end
+
+  subgraph Q[sql/]
+    Q1[v_player_spicy_by_rel_age.sql]
+  end
+
+  L[logs/]
+
+  A --- S
+  A --- N
+  A --- U
+  A --- W
+  A --- PIP
+  A --- D
+  A --- Q
+  A --- L
+
+  %% logical flows
+  W3 --> D1 & D2 & D3
+  W1 --> D2
+  W2 --> D1
+  P4 --> D4
+  P5 --> D4
+  P6 --> D4
+  P1 --> D5
+  P2 -->|reads DB: player_peak_season| Q
+  P3 -->|creates: player_five_year_aligned_z| Q1
+
+  U3 -. S3 I/O .- D
+  U5 -. DB Engine .- Q
+
