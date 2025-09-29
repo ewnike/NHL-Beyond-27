@@ -8,11 +8,13 @@ September 7, 2025.
 # ---------- IMPORTS AT TOP (fixes E402) ----------
 import logging
 import os
+from pathlib import Path
 
+import boto3
+from botocore.exceptions import ClientError, NoCredentialsError
 from constants import S3_BUCKET_NAME, local_download_path
 from db_utils import create_table, define_player_peak_season, get_db_engine, get_metadata
 from dotenv import load_dotenv
-from s3_utils import download_from_s3
 
 # optional logger util; import only (no execution yet)
 try:
@@ -105,6 +107,55 @@ NUMERIC_COLS = [
     "Sv%",
 ]
 INT_COLS = ["api_id", "age", "draft_year", "draft_rnd", "draft_overall", "games_played"]
+
+# Try to import your helper(s); tolerate renames
+try:
+    from s3_utils import download_from_s3 as _s3_dl  # old name
+except Exception:
+    _s3_dl = None
+    try:
+        from s3_utils import download_file as _s3_dl_alt  # new name?
+    except Exception:
+        _s3_dl_alt = None
+
+
+def _ensure_parent(path: str | os.PathLike) -> None:
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+
+
+def fetch_from_s3(bucket: str, key: str, dest: str, overwrite: bool = False) -> str:
+    """
+    Compatibility wrapper:
+      1) use s3_utils.download_from_s3 if present
+      2) else use s3_utils.download_file if present
+      3) else use raw boto3 download_file
+    Returns the local dest path.
+    """
+    _ensure_parent(dest)
+    if not overwrite and os.path.exists(dest):
+        return dest
+
+    # 1) old helper
+    if _s3_dl is not None:
+        return _s3_dl(bucket, key, dest, overwrite=overwrite)
+
+    # 2) alt helper signature guesses
+    if _s3_dl_alt is not None:
+        try:
+            return _s3_dl_alt(bucket, key, dest, overwrite=overwrite)
+        except TypeError:
+            # maybe no overwrite kw
+            return _s3_dl_alt(bucket, key, dest)
+
+    # 3) raw boto3
+    try:
+        s3 = boto3.client("s3")
+        s3.download_file(bucket, key, dest)
+        return dest
+    except NoCredentialsError as e:
+        raise SystemExit("AWS credentials not found. Set AWS_PROFILE or configure AWS keys.") from e
+    except ClientError as e:
+        raise SystemExit(f"S3 error downloading s3://{bucket}/{key}: {e}") from e
 
 
 def copy_csv_to_table(
@@ -205,12 +256,20 @@ def load_mode_upsert(engine, table_name: str, csv_path: str, conflict_cols: list
         conn.close()
 
 
-def main(mode: str = "upsert", conflict_key: str = "player_season_team"):
+def main(
+    mode: str = "upsert",
+    conflict_key: str = "player_season_team",
+    download_only: bool = False,
+):
     # 1) Download CSV (skip if already present)
     os.makedirs(os.path.dirname(LOCAL_CSV_PATH), exist_ok=True)
     logger.info("Downloading %s from s3://%s to %s", S3_KEY, S3_BUCKET_NAME, LOCAL_CSV_PATH)
     print(f"Downloading s3://{S3_BUCKET_NAME}/{S3_KEY} -> {LOCAL_CSV_PATH}")
-    download_from_s3(S3_BUCKET_NAME, S3_KEY, LOCAL_CSV_PATH, overwrite=False)
+    fetch_from_s3(S3_BUCKET_NAME, S3_KEY, LOCAL_CSV_PATH, overwrite=False)
+
+    if download_only:
+        print(f"CSV available at {LOCAL_CSV_PATH}; skipping DB load.")
+        return
 
     # 2) Ensure table exists
     engine = get_db_engine()
@@ -250,7 +309,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Ingest peak season CSV into Postgres")
     p.add_argument(
         "--mode",
-        choices=["upsert", "replace"],
+        choices=["upsert", "replace"],  # add "upset" too if you want the alias
         default="upsert",
         help="upsert merges by key; replace truncates then loads",
     )
@@ -260,5 +319,13 @@ if __name__ == "__main__":
         default="player_season_team",
         help="which uniqueness key to use for upsert",
     )
+    # NEW: download-only switch
+    p.add_argument(
+        "--download-only",
+        action="store_true",
+        help="download CSV from S3 and exit (skip DB load)",
+    )
+
     args = p.parse_args()
-    main(mode=args.mode, conflict_key=args.conflict_key)
+
+    main(mode=args.mode, conflict_key=args.conflict_key, download_only=args.download_only)
