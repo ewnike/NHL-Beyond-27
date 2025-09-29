@@ -2,6 +2,16 @@
 code for scraping player info for seasons 2013-14
 through 2024-25. This is page 1, it has player age but
 toi is all-inclusive, not EvenStrength, 5vs5.
+This code was developed with the help of ChatGPT.
+ChatGpt was very useful in helping keep the program
+organized in addition to helping crack the code! Hockey
+Reference.comn is a difficult site to scrape. The owners
+the site publish data for free. They take great exception
+to abuse of their data and have taken measures to
+keep users from actively and consistently scrape information.
+
+Eric Winiecke
+September 2025.
 """
 
 import os
@@ -118,6 +128,11 @@ def wait(driver, cond, timeout=20):
 
 
 def dismiss_cookie_banners(driver):
+    """
+    Navigate the various pop-ups.
+    This helper was designed and implemented
+    with the ChatGpt.
+    """
     texts = [
         "Agree",
         "I Agree",
@@ -542,6 +557,8 @@ def do_login_flow_with_retry():
     """
     Start fresh browser, open HR, Ad-Free Login, and submit creds.
     If the session dies, restart once. Returns a live, logged-in driver.
+    ChatGpt was instrumental in this code to help construct a function
+    that was able to handle different page configs.
     """
 
     def run(d):

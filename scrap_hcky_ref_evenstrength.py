@@ -1,6 +1,11 @@
 """
 Code to scrape the even strength 5v5 toi information for
-NHL player seasons 203-14 - 2024-25.
+NHL player seasons 203-14 - 2024-25. This code was patterned
+after the scrap_ref_hockey_player.py which was developed with
+the help of ChatGpt.
+
+Eric Winiecke
+September 2025.
 """
 
 import os

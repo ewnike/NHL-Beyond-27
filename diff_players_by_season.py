@@ -1,3 +1,17 @@
+"""
+Code for looking for differences in
+column counts between the data scrapped
+from HockeyReference.com. Data was scraped
+three times to retrieve goalie, even strength, and
+player information. Code was intrumental in
+finding differences between the data files
+and arriving at a consensus of correct number
+of players as defined in the study parameters.
+
+Eric Winiecke
+September, 2025.
+"""
+
 #!/usr/bin/env python3
 # diff_players_by_season.py
 
