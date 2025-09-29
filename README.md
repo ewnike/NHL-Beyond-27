@@ -29,10 +29,61 @@ We follow the NHL convention: a player’s age for a given season is his age on 
 - Keeps each player’s data within a single season (consistent team/linemates/context)  
 - Avoids splitting seasons across calendar years
 
+### Position split and weighted scoring
 
-Outcome: Prefer score- & venue-adjusted 5v5 CF% (or at least raw 5v5 CF%). Also keep CF/60 and CA/60 as secondary outcomes.
+We analyze **forwards** and **defensemen** separately to respect role differences, and we also report a combined, position-adjusted index.
 
-Weights: Use EV minutes as analytical weights (seasons with more minutes are estimated more precisely).
+**Position identification.** Skaters are labeled **F** (forwards) or **D** (defensemen) based on their roster position for each season.
+
+**Primary metric.** All position splits use 5-on-5 **Corsi** (even-strength shot attempts). Unless otherwise noted, we use **CF%** (Corsi For percentage).
+
+---
+
+#### 🌶️ Spicy (position-adjusted score)
+
+A simple, comparable “how hot was this season?” score within each position and season.
+
+For each season `t` and position `p ∈ {F, D}`:
+
+1. Compute the position-season mean and standard deviation of CF% among skaters meeting the TOI threshold:
+   - `μ_{p,t}` = mean CF% for position `p` in season `t`
+   - `σ_{p,t}` = std dev of CF% for position `p` in season `t`
+2. For player `i`, define the **Spicy score**:
+   - `Spicy_{i,t} = ( CF%_{i,t} - μ_{p,t} ) / σ_{p,t}`
+
+**Interpretation.** `0` = position-average; `+1` = one SD above peers in the same position & season.
+
+---
+
+#### 🌶️🌶️ Weighted Spicy (usage-weighted, position-adjusted)
+
+“Spicy,” but scaled by how much the player actually played at 5v5, so big minutes amplify impact.
+
+Let `TOI5_{i,t}` be player `i`’s 5-on-5 minutes in season `t`. Define a usage weight:
+
+- `w_{i,t} = TOI5_{i,t} / median_p(TOI5_{·,t})` (clipped to `[0.5, 2.0]` to avoid extreme leverage)
+
+Then:
+
+- `WeightedSpicy_{i,t} = Spicy_{i,t} × w_{i,t}`
+
+**Interpretation.** Keeps the same “hotness” ordering as Spicy, but credits players who sustain it over larger minutes.
+
+---
+
+#### Reporting
+
+- **By position:** We present Spicy and Weighted Spicy distributions **separately** for forwards and defensemen.
+- **Combined index:** For an overall leaderboard, we use **Spicy** / **Weighted Spicy**, which are already position-standardized (so F and D are comparable).
+
+---
+
+#### Why these choices (and what’s next)
+
+- Position-standardizing removes systematic F/D differences, making comparisons fair.
+- Usage weighting acknowledges that driving play over more minutes is harder and more valuable.
+- **Provisional:** These weights are intentionally conservative. In future work we will estimate **data-driven weights** (e.g., via cross-validation against out-of-sample team xG/goal differential, score/venue/zone-start controls, and quality-of-competition adjustments) to refine both the standardization and the usage scaling.
+
 
 ## Quickstart
 
