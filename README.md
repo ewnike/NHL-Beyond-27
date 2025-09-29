@@ -62,20 +62,23 @@ We analyze **forwards** and **defensemen** separately to respect role difference
 
 **Primary metric.** All position splits use 5-on-5 **Corsi** (even-strength shot attempts). Unless otherwise noted, we use **CF%** (Corsi For percentage).
 
+---
+
 ### F/D role weights (for a single combined leaderboard)
 
-When we combine **forwards (F)** and **defensemen (D)** into one ranking, we apply a **position-level weight** to reflect strategic value or scarcity by position. This weighting is **separate from** Weighted Spicy (which scales by individual 5v5 TOI).
+When we combine forwards (F) and defensemen (D) into one ranking, we apply a **position-level weight** to reflect strategic value or scarcity by position. This weighting is **separate from Weighted Spicy** (which scales by individual 5v5 TOI).
 
 **Definition.** For player *i* in season *t* with position *p ∈ {F, D}*:
-- `Score_{i,t} = γ_p × Metric_{i,t}`, where `Metric ∈ {Spicy, Weighted Spicy}` and `γ_p` is a constant for position *p*.
+
+`Score(i,t) = γ_p × Metric(i,t)`, where `Metric ∈ {Spicy, Weighted Spicy}` and `γ_p` is a constant for position *p*.
 
 **Why use role weights?**
-- Makes a single, comparable index across positions without ignoring systematic role differences.
-- Lets us encode study-wide priors (e.g., relative scarcity) without affecting within-position ordering.
+- Makes a single, comparable index across positions without ignoring systematic role differences.  
+- Encodes study-wide priors (e.g., relative scarcity) without affecting within-position ordering.
 
-**What we use now.** We treat `γ_F` and `γ_D` as **provisional** constants for the study window. They do **not** depend on TOI and are **only** applied at the combination step.
+**What we use now.** We treat `γ_F` and `γ_D` as **provisional** constants for the study window. They do **not** depend on TOI and are applied **only** at the combination step.
 
-**Future refinement.** In follow-up work, we will estimate `γ_F` and `γ_D` from data (e.g., via cross-validation to out-of-sample team xG/goal-diff, or by matching each position’s marginal contribution to wins), and report sensitivity to alternative priors.
+**Future refinement.** We will estimate `γ_F` and `γ_D` from data (e.g., cross-validation to out-of-sample team xG/goal differential, or by matching each position’s marginal contribution to wins) and report sensitivity to alternative priors.
 
 ---
 
