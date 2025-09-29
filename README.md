@@ -75,80 +75,47 @@ Swap `YOUR_PASSWORD` for your actual password (keep the quotes).
 
 ## Project layout
 ```mermaid
+
 flowchart TD
-  A[NHL-Beyond-27/]
+  ROOT[NHL-Beyond-27]
 
-  subgraph S[configs & meta]
-    G[pyproject.toml]
-    H[.pre-commit-config.yaml]
-    P[.env (ignored)]
-    R[README.md]
+  subgraph NB[Notebooks]
+    NB1[Book1 EH and DB]
+    NB2[Book2 HockeyRef]
+    NB3[Book3 Analysis]
   end
 
-  subgraph N[notebooks (top-level files)]
-    N1[NHL_Beyond27_Book1_EH_download_and_DB.ipynb]
-    N2[NHL_Beyond27_Book2_HockeyRef_Scrape_and_Cleaning.ipynb]
-    N3[NHL_Beyond27_Book3_Analysis.ipynb]
+  subgraph SCRIPTS[Scrips and Pipelines]
+    PIPE1[ingest_peak_season_py]
+    PIPE2[build_player_streaks_and_aligned_py]
+    PIPE3[build_player_five_year_aligned_z_py]
+    VIEW1[view_v_player_spicy_by_rel_age_sql]
   end
 
-  subgraph U[utilities]
-    U1[constants.py]
-    U2[log_utils.py]
-    U3[s3_utils.py]
-    U4[time_utils.py]
-    U5[db_utils.py]
+  subgraph UTILS[Utilities]
+    U1[constants_py]
+    U2[db_utils_py]
+    U3[s3_utils_py]
+    U4[log_utils_py]
   end
 
-  subgraph W[scrapers]
-    W1[scrap_hcky_ref_evenstrength.py]
-    W2[scrap_hockey_ref_player.py]
-    W3[download_ref_hockey.py]
+  subgraph DATA[Data]
+    D1[data_dir]
+    D2[data_outputs]
+    D3[logs_dir]
   end
 
-  subgraph PIP[pipeline & build]
-    P1[ingest_peak_season.py]
-    P2[build_player_streaks_and_aligned.py]
-    P3[build_player_five_year_aligned_z.py]
-    P4[build_ref_hockey.py]
-    P5[drop_goalies_etal_inplace.py]
-    P6[build_ref_hockey_data_table.py]
-    P7[diff_players_by_season.py]
-  end
+  ROOT --> NB
+  ROOT --> SCRIPTS
+  ROOT --> UTILS
+  ROOT --> DATA
 
-  subgraph D[data/]
-    D1[seasons/]
-    D2[even_strength/]
-    D3[goalies/]
-    D4[outputs/]
-    D5[peak_player_season_stats.csv]
-  end
+  U2 --> PIPE1
+  U2 --> PIPE2
+  U2 --> PIPE3
+  PIPE3 --> VIEW1
 
-  subgraph Q[sql/]
-    Q1[v_player_spicy_by_rel_age.sql]
-  end
-
-  L[logs/]
-
-  A --- S
-  A --- N
-  A --- U
-  A --- W
-  A --- PIP
-  A --- D
-  A --- Q
-  A --- L
-
-  %% logical flows
-  W3 --> D1 & D2 & D3
-  W1 --> D2
-  W2 --> D1
-  P4 --> D4
-  P5 --> D4
-  P6 --> D4
-  P1 --> D5
-  P2 -->|reads DB: player_peak_season| Q
-  P3 -->|creates: player_five_year_aligned_z| Q1
-
-  U3 -. S3 I/O .- D
-  U5 -. DB Engine .- Q
-
+  D1 --> PIPE1
+  D2 --> PIPE2
+  D2 --> PIPE3
+```
