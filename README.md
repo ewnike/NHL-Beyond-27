@@ -3,6 +3,31 @@
 ### Motivation
 This study is motivated by work from Elijah Cavan, Jiguo Cao, and Tim B. Swartz. Their paper, *NHL Aging Curves using Functional Principal Component Analysis* (published May 2, 2025), analyzes all NHL players from 1920–2022 and “restricts the data to include only player-years 22–34. We also limit the data to players who had an NHL career lasting at least seven seasons. This provides us with 1,785 forwards and 883 defencemen.” Using functional principal component analysis (FPCA), they “observed concave shapes with peaks around 26–28 years,” meaning player performance peaks at roughly age 27.
 
+### Data sources & acquisition
+
+We combine roster/performance, salary, and player metadata from three public sources (accessed September 29, 2025):
+
+- **Hockey-Reference** ([hockey-reference.com](https://www.hockey-reference.com/))  
+  *What we used:* season-by-season player stats and game logs used to compute 5-on-5 **Corsi** and TOI thresholds.  
+  *How acquired:* scraped via scripted requests with polite rate limiting and caching; normalized player names and captured site player IDs when available.
+
+- **Spotrac** ([spotrac.com/nhl](https://www.spotrac.com/nhl))  
+  *What we used:* **cap hit** (capHit) information by player and season for contextual/contract analyses.  
+  *How acquired:* scraped team/player pages; parsed contracts to extract season cap hits; mapped to Hockey-Reference players by name + team + season, with manual disambiguation on collisions.
+
+- **Evolving-Hockey** ([evolving-hockey.com](https://evolving-hockey.com/))  
+  *What we used:* player reference info (e.g., positions/IDs) to improve **F vs D** labeling and resolve name collisions.  
+  *How acquired:* downloaded public player info where available; used as a “key” table when linking across sources.
+
+**Merging & cleaning.**  
+- Primary keys: `(player_id_hr OR canonical_name, season)`; secondary checks with team and position.  
+- Standardized seasons as `YYYY–YY` (e.g., `2018–19`), age per NHL convention (age on **Feb 1**).  
+- Deduplicated aliases, handled diacritics, and reconciled mid-season trades by season-level aggregation.
+
+**Notes.**  
+- This project is for research/educational purposes. Respect each site’s terms of service and robots.txt; if you reproduce the pipeline, use sensible rate limits and local caching.  
+- Future releases will include a data dictionary and a script to rebuild the curated tables end-to-end.
+
 ### Our sample
 We restrict our cohort using the following criteria:
 
