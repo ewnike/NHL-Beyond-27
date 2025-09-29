@@ -17,6 +17,7 @@ decorator==5.2.1
 distlib==0.4.0
 dotenv==0.9.9
 executing==2.2.1
+fastjsonschema==2.21.2
 filelock==3.19.1
 h11==0.16.0
 identify==2.6.14
@@ -27,6 +28,8 @@ ipython==9.5.0
 ipython_pygments_lexers==1.1.1
 jedi==0.19.2
 jmespath==1.0.1
+jsonschema==4.25.1
+jsonschema-specifications==2025.9.1
 jupyter_client==8.6.3
 jupyter_core==5.8.1
 kaleido==1.1.0
@@ -35,8 +38,9 @@ lxml==6.0.1
 matplotlib-inline==0.1.7
 mypy_extensions==1.1.0
 narwhals==2.5.0
+nbformat==5.10.4
 nest-asyncio==1.6.0
--e git+https://github.com/ewnike/NHL-Beyond-27.git@c4bc73983f4228df0474a507a68465a873913eba#egg=nhl_beyond27
+-e git+https://github.com/ewnike/NHL-Beyond-27.git@51d1c6f199da02f3f522348ca84e40a213fa35ff#egg=nhl_beyond27
 nodeenv==1.9.1
 numpy==2.3.3
 orjson==3.11.3
@@ -65,7 +69,9 @@ python-dotenv==1.1.1
 pytz==2025.2
 PyYAML==6.0.2
 pyzmq==27.1.0
+referencing==0.36.2
 requests==2.32.5
+rpds-py==0.27.1
 ruff==0.13.0
 s3transfer==0.13.1
 scipy==1.16.2
