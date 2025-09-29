@@ -83,6 +83,7 @@ flowchart TD
     NB1[Book1 EH and DB]
     NB2[Book2 HockeyRef]
     NB3[Book3 Analysis]
+    NB4[Book4 Cap vs Corsi]
   end
 
   subgraph SCRIPTS[Scrips and Pipelines]
