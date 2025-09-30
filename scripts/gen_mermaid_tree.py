@@ -1,3 +1,11 @@
+"""
+Script that generates the mermaid project
+layout on the Mads Beyond 27 git repo.
+
+Eric Winiecke
+September 2025.
+"""
+
 #!/usr/bin/env python3
 import os
 from pathlib import Path
