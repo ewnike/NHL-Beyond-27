@@ -186,48 +186,43 @@ Swap `YOUR_PASSWORD` for your actual password (keep the quotes).
 
 ## Project layout
 ```mermaid
-
-flowchart TD
-  ROOT[NHL-Beyond-27]
-
-  subgraph NB[Notebooks]
-    NB1[Book1 EH and DB]
-    NB2[Book2 HockeyRef]
-    NB3[Book3 Analysis]
-    NB4[Book4 Cap vs Corsi]
-  end
-
-  subgraph SCRIPTS[Scrips and Pipelines]
-    PIPE1[ingest_peak_season_py]
-    PIPE2[build_player_streaks_and_aligned_py]
-    PIPE3[build_player_five_year_aligned_z_py]
-    VIEW1[view_v_player_spicy_by_rel_age_sql]
-  end
-
-  subgraph UTILS[Utilities]
-    U1[constants_py]
-    U2[db_utils_py]
-    U3[s3_utils_py]
-    U4[log_utils_py]
-  end
-
-  subgraph DATA[Data]
-    D1[data_dir]
-    D2[data_outputs]
-    D3[logs_dir]
-  end
-
-  ROOT --> NB
-  ROOT --> SCRIPTS
-  ROOT --> UTILS
-  ROOT --> DATA
-
-  U2 --> PIPE1
-  U2 --> PIPE2
-  U2 --> PIPE3
-  PIPE3 --> VIEW1
-
-  D1 --> PIPE1
-  D2 --> PIPE2
-  D2 --> PIPE3
+flowchart LR
+    id__["NHL-Beyond-27"]
+    id_scripts["scripts"]
+    id_src["src"]
+    id_tests["tests"]
+    id__gitignore[".gitignore"]
+    id_LICENSE["LICENSE"]
+    id_Makefile["Makefile"]
+    id_README_md["README.md"]
+    id_pyproject_toml["pyproject.toml"]
+    id_requirements_txt["requirements.txt"]
+    id_tests__test_fix_std_one_season_py["test_fix_std_one_season.py"]
+    id_scripts__dump_db_sh["dump_db.sh"]
+    id_scripts__gen_mermaid_tree_py["gen_mermaid_tree.py"]
+    id_scripts__gen_tree_sh["gen_tree.sh"]
+    id_scripts__restore_latest_from_s3_sh["restore_latest_from_s3.sh"]
+    id_src__nhl_beyond27["nhl_beyond27"]
+    id_src__nhl_beyond27____init___py["__init__.py"]
+    id_src__nhl_beyond27__cli_py["cli.py"]
+    id_src__nhl_beyond27__pipeline_py["pipeline.py"]
+    id__ --> id_scripts
+    id__ --> id_src
+    id__ --> id_tests
+    id__ --> id__gitignore
+    id__ --> id_LICENSE
+    id__ --> id_Makefile
+    id__ --> id_README_md
+    id__ --> id_pyproject_toml
+    id__ --> id_requirements_txt
+    id_tests --> id_tests__test_fix_std_one_season_py
+    id_scripts --> id_scripts__dump_db_sh
+    id_scripts --> id_scripts__gen_mermaid_tree_py
+    id_scripts --> id_scripts__gen_tree_sh
+    id_scripts --> id_scripts__restore_latest_from_s3_sh
+    id_src --> id_src__nhl_beyond27
+    id_src__nhl_beyond27 --> id_src__nhl_beyond27____init___py
+    id_src__nhl_beyond27 --> id_src__nhl_beyond27__cli_py
+    id_src__nhl_beyond27 --> id_src__nhl_beyond27__pipeline_py
 ```
+
