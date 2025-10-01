@@ -61,6 +61,7 @@ def normalize_cols(df: pd.DataFrame, player_col: str, season_col: str) -> pd.Dat
 
 
 def to_keyset(df: pd.DataFrame, player_col: str, season_col: str) -> set[tuple[str, str]]:
+    """Return unique (player, season) key tuples from the given columns."""
     return set(map(tuple, df[[player_col, season_col]].itertuples(index=False, name=None)))
 
 
