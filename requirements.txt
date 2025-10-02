@@ -40,9 +40,9 @@ mypy_extensions==1.1.0
 narwhals==2.5.0
 nbformat==5.10.4
 nest-asyncio==1.6.0
--e git+https://github.com/ewnike/NHL-Beyond-27.git@e6877408723c4989b72107375eed5f0ca81be775#egg=nhl_beyond27
+-e git+https://github.com/ewnike/NHL-Beyond-27.git@4b6774a0df882886446ecc78269ebaf6b57f7172#egg=nhl_beyond27
 nodeenv==1.9.1
-numpy==2.3.2
+numpy==2.3.3
 orjson==3.11.3
 outcome==1.3.0.post0
 packaging==25.0
@@ -90,7 +90,7 @@ tqdm==4.67.1
 traitlets==5.14.3
 trio==0.30.0
 trio-websocket==0.12.2
-typing_extensions~=4.14.0
+typing_extensions==4.14.1
 tzdata==2025.2
 urllib3==2.5.0
 utils==1.0.2
