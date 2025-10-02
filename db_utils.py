@@ -253,35 +253,6 @@ def create_player_five_year_aligned_table(
     )
 
 
-# def create_player_five_year_aligned_z_table(
-#     table_name: str, metadata, schema: str = "public"
-# ) -> Table:
-#     return Table(
-#         table_name,
-#         metadata,
-#         Column("player", String, nullable=False),
-#         Column("position", String),
-#         Column("peak_year", Integer, nullable=False),
-#         Column("rel_age", Integer, nullable=False),
-#         Column("start_year", Integer, nullable=False),
-#         Column("season", String, nullable=False),
-#         Column("age", Integer),
-#         Column("cf_pct", Numeric(5, 2)),
-#         Column("cf60", Numeric(5, 2)),
-#         Column("ca60", Numeric(5, 2)),
-#         Column("cf_pct_z", Numeric),
-#         Column("cf60_z", Numeric),
-#         Column("ca60_z", Numeric),
-#         Column("spicy_score", Numeric),
-#         Column(
-#             "created_at",
-#             DateTime(timezone=True),
-#             server_default=text("now()"),
-#             nullable=False,
-#         ),
-#         PrimaryKeyConstraint("player", "peak_year", "rel_age", name=f"pk_{table_name}"),
-#         schema=schema,
-#     )
 def create_player_five_year_aligned_z_table(table_name: str, metadata, schema: str = "public"):
     return Table(
         table_name,
