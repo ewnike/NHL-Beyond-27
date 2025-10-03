@@ -45,7 +45,7 @@ mypy_extensions==1.1.0
 narwhals==2.5.0
 nbformat==5.10.4
 nest-asyncio==1.6.0
--e git+https://github.com/ewnike/NHL-Beyond-27.git@5056e68bfedb7486c625a09e8034ea77b19b7192#egg=nhl_beyond27
+-e git+https://github.com/ewnike/NHL-Beyond-27.git@161592a64cca9a50996088769563acd595bd3dbb#egg=nhl_beyond27
 nodeenv==1.9.1
 numpy==2.3.3
 orjson==3.11.3
