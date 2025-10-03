@@ -197,7 +197,11 @@ flowchart LR
     id_README_md["README.md"]
     id_pyproject_toml["pyproject.toml"]
     id_requirements_txt["requirements.txt"]
+    id_tests__gen_arch_diagram_py["gen_arch_diagram.py"]
+    id_tests__gen_arch_hr_py["gen_arch_hr.py"]
+    id_tests__gen_arch_svg_py["gen_arch_svg.py"]
     id_tests__test_fix_std_one_season_py["test_fix_std_one_season.py"]
+    id_scripts__diff_players_normalized_py["diff_players_normalized.py"]
     id_scripts__dump_db_sh["dump_db.sh"]
     id_scripts__gen_mermaid_tree_py["gen_mermaid_tree.py"]
     id_scripts__gen_tree_sh["gen_tree.sh"]
@@ -215,7 +219,11 @@ flowchart LR
     id__ --> id_README_md
     id__ --> id_pyproject_toml
     id__ --> id_requirements_txt
+    id_tests --> id_tests__gen_arch_diagram_py
+    id_tests --> id_tests__gen_arch_hr_py
+    id_tests --> id_tests__gen_arch_svg_py
     id_tests --> id_tests__test_fix_std_one_season_py
+    id_scripts --> id_scripts__diff_players_normalized_py
     id_scripts --> id_scripts__dump_db_sh
     id_scripts --> id_scripts__gen_mermaid_tree_py
     id_scripts --> id_scripts__gen_tree_sh
@@ -224,5 +232,7 @@ flowchart LR
     id_src__nhl_beyond27 --> id_src__nhl_beyond27____init___py
     id_src__nhl_beyond27 --> id_src__nhl_beyond27__cli_py
     id_src__nhl_beyond27 --> id_src__nhl_beyond27__pipeline_py
+```
+
 ```
 
