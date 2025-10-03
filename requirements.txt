@@ -12,6 +12,8 @@ charset-normalizer==3.4.3
 choreographer==1.1.1
 click==8.2.1
 comm==0.2.3
+contourpy==1.3.3
+cycler==0.12.1
 debugpy==1.8.17
 decorator==5.2.1
 distlib==0.4.0
@@ -19,6 +21,7 @@ dotenv==0.9.9
 executing==2.2.1
 fastjsonschema==2.21.2
 filelock==3.19.1
+fonttools==4.60.1
 h11==0.16.0
 identify==2.6.14
 idna==3.10
@@ -33,14 +36,16 @@ jsonschema-specifications==2025.9.1
 jupyter_client==8.6.3
 jupyter_core==5.8.1
 kaleido==1.1.0
+kiwisolver==1.4.9
 logistro==1.1.0
 lxml==6.0.1
+matplotlib==3.10.6
 matplotlib-inline==0.1.7
 mypy_extensions==1.1.0
 narwhals==2.5.0
 nbformat==5.10.4
 nest-asyncio==1.6.0
--e git+https://github.com/ewnike/NHL-Beyond-27.git@4b6774a0df882886446ecc78269ebaf6b57f7172#egg=nhl_beyond27
+-e git+https://github.com/ewnike/NHL-Beyond-27.git@5056e68bfedb7486c625a09e8034ea77b19b7192#egg=nhl_beyond27
 nodeenv==1.9.1
 numpy==2.3.3
 orjson==3.11.3
@@ -51,6 +56,7 @@ parso==0.8.5
 pathspec==0.12.1
 patsy==1.0.1
 pexpect==4.9.0
+pillow==11.3.0
 platformdirs==4.4.0
 plotly==6.3.0
 pluggy==1.6.0
@@ -61,6 +67,7 @@ psycopg2-binary==2.9.10
 ptyprocess==0.7.0
 pure_eval==0.2.3
 Pygments==2.19.2
+pyparsing==3.2.5
 PySocks==1.7.1
 pytest==8.4.1
 pytest-timeout==2.4.0
