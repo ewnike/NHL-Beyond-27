@@ -1,0 +1,8 @@
+{
+  "db": "nhl_beyond",
+  "created_utc": "2025-10-03T19:12:46Z",
+  "s3_key": "ewnike-mads593-nhl/backups/backup_nhl_beyond_20251003T191246Z.dump.zst",
+  "s3_key_sha256": "ewnike-mads593-nhl/backups/backup_nhl_beyond_20251003T191246Z.dump.zst.sha256",
+  "encoding": "UTF-8",
+  "format": "pg_dump -Fc | zstd"
+}
