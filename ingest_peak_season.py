@@ -159,6 +159,7 @@ def fetch_from_s3(bucket: str, key: str, dest: str, overwrite: bool = False) -> 
 
 
 def copy_csv_to_table(
+    # Copy csv file to psql data table.
     conn,
     table_name: str,
     csv_path: str,
@@ -201,6 +202,7 @@ def ensure_unique_index(engine, table_name: str, cols: list[str], name: str):
 
 
 def load_mode_replace(engine, table_name: str, csv_path: str):
+    # replace data if necessary. CRUD operations.
     logger.info("TRUNCATE %s", table_name)
     conn = engine.raw_connection()
     try:
@@ -221,6 +223,7 @@ def load_mode_replace(engine, table_name: str, csv_path: str):
 
 
 def load_mode_upsert(engine, table_name: str, csv_path: str, conflict_cols: list[str]):
+    # upsert data into datatable. CRUD operations.
     stage = f"{table_name}_stage"
     logger.info("CREATE TEMP TABLE %s LIKE %s", stage, table_name)
     col_list = ", ".join(f'"{c}"' for c in COLUMNS_IN_ORDER)

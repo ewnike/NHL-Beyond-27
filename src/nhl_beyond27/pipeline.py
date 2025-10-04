@@ -2,15 +2,42 @@ from __future__ import annotations
 
 import logging
 import sys
+import subprocess
+import shutil
 from importlib import import_module
 from importlib import util as importlib_util
 from pathlib import Path
 
 log = logging.getLogger(__name__)
+
 # repo root = .../NHL-Beyond-27
-PROJ_ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[2]  # unify on ROOT everywhere
 
 
+# ----------------------------
+# Dump to S3 (wrapper for scripts/dump_to_s3.sh)
+# ----------------------------
+def dump_db_to_s3(dbname: str, s3_uri: str, *, sse: str = "AES256") -> None:
+    """
+    Run the repo's dump script:
+      dumps -> compresses -> sha256 -> uploads to S3 -> writes manifest.
+    Requirements: pg_dump, zstd, aws CLI available; PG* env vars set if needed.
+    """
+    script = ROOT / "scripts" / "dump_to_s3.sh"
+    if not script.exists():
+        raise FileNotFoundError(f"Missing dump script: {script}")
+
+    for tool in ("pg_dump", "zstd", "aws"):
+        if not shutil.which(tool):
+            raise RuntimeError(f"Required tool not found on PATH: {tool}")
+
+    cmd = [str(script), dbname, s3_uri, sse]
+    subprocess.run(cmd, check=True)
+
+
+# ----------------------------
+# Dynamic import helpers (your existing logic)
+# ----------------------------
 def load_optional(module_name: str, filename: str, required: bool = False):
     try:
         mod = __import__(module_name, fromlist=["*"])
@@ -18,19 +45,15 @@ def load_optional(module_name: str, filename: str, required: bool = False):
     except Exception as err:  # capture the original exception
         msg = f"Missing module/file: {module_name} ({filename})."
         if required:
-            # keep the original traceback attached (B904)
             raise ImportError(msg) from err
-            # If you prefer to hide the original cause, use:
-            # raise ImportError(msg) from None
         log.warning("%s Skipping optional step.", msg)
         return None
 
 
 def _prepare_sys_path() -> None:
-    root = str(PROJ_ROOT)
+    root = str(ROOT)
     if root not in sys.path:
         sys.path.insert(0, root)  # let scripts import db_utils, s3_utils, etc. from repo root
-    # Soft-alias legacy module names to package modules if you moved them
     _alias("db_utils", "nhl_beyond27.db.utils")
     _alias("s3_utils", "nhl_beyond27.s3_utils")
     _alias("log_utils", "nhl_beyond27.logging_utils")
@@ -59,7 +82,7 @@ def _import_or_path(module_name: str, filename: str, required: bool = True):
     try:
         return import_module(module_name)
     except ModuleNotFoundError:
-        path = PROJ_ROOT / filename
+        path = ROOT / filename
         if path.exists():
             log.info("Loading %s from path: %s", module_name, path)
             return _load_by_path(path)
@@ -70,6 +93,9 @@ def _import_or_path(module_name: str, filename: str, required: bool = True):
         return None
 
 
+# ----------------------------
+# Rebuild pipeline (your existing steps)
+# ----------------------------
 def rebuild() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
     _prepare_sys_path()
@@ -111,5 +137,24 @@ def rebuild() -> None:
     log.info("✅ Rebuild complete.")
 
 
-def full(backup: bool = True, restore_path: str | None = None) -> None:
+def full(
+    backup: bool = True,
+    restore_path: str | None = None,
+    *,
+    backup_dbname: str = "nhl_beyond",
+    backup_s3: str = "s3://ewnike-mads593-nhl/backups",
+) -> None:
+    """
+    Run the full rebuild; optionally run a backup to S3 afterwards.
+    - Set backup_dbname/s3 via args or env if you prefer.
+    """
     rebuild()
+
+    if backup:
+        try:
+            log.info("→ dump_db_to_s3(%s -> %s)", backup_dbname, backup_s3)
+            dump_db_to_s3(backup_dbname, backup_s3)
+            log.info("✅ Backup uploaded.")
+        except Exception as e:
+            log.error("Backup failed: %s", e)
+            raise
